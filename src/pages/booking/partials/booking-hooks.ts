@@ -29,12 +29,11 @@ export function useFetchServices() {
     refetchOnWindowFocus: false
   });
 }
-
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   return useMutation<ApiOk, AxiosError<ApiError>, FormData>({
     mutationFn: async (data) => {
-      const res = await axios.post(`${apiUrl}/api/create-booking`, data);
+      const res = await axios.post(`${apiUrl}api/queue`, data);
       return res.data;
     },
     onSuccess: () => {
