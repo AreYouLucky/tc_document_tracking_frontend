@@ -32,7 +32,7 @@ export default function Modal({ show, onClose, children }: ModalProps) {
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <Dialog.Panel className="w-full max-w-md rounded-lg bg-transparent">
               {children}
             </Dialog.Panel>
           </Transition.Child>

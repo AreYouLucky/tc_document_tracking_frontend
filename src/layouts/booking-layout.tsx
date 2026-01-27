@@ -8,7 +8,7 @@ interface BookingLayoutProps {
 const BookingLayout: React.FC<BookingLayoutProps> = ({ children, className }) => {
   return (
     <div
-      className={`relative min-h-screen ${className}`}
+      className={`relative min-h-screen print:hidden ${className}`}
       style={{
         backgroundImage: `url('/assets/background.jpg')`,
         backgroundSize: 'cover',

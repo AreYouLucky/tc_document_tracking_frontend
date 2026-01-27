@@ -32,3 +32,21 @@
   font-weight: 600;
   font-style: normal;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #print-coa,
+  #print-coa * {
+    visibility: visible;
+  }
+
+  #print-coa {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
