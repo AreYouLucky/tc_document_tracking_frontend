@@ -12,7 +12,7 @@ function DocumentQueueing(){
         <QueueingLayout>
              <div className="grid md:grid-cols-2  gap-6 py-4">
                 <div className="flex flex-col gap-4">
-                    <div className="bg-white rounded-2xl px-8 pb-5 pt-5 ">
+                    <div className="bg-white/90 rounded-2xl px-8 pb-5 pt-5 ">
                         <p className="text-orange-600 inter-bold text-center text-3xl py-2">
                             Pending
                         </p>
@@ -24,7 +24,7 @@ function DocumentQueueing(){
                     </div>
                 </div>
                 <div>
-                    <div className="bg-white rounded-2xl px-8 pb-5 pt-5 ">
+                    <div className="bg-white/90 rounded-2xl px-8 pb-5 pt-5 ">
                         <p className="text-orange-600 inter-bold text-center text-3xl py-2">
                             Releasing
                         </p>
