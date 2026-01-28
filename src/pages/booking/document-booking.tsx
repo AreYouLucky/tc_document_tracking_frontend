@@ -142,7 +142,7 @@ export default function DocumentBooking() {
                     <div className="grid gap-3">
                         <Label className="text-slate-800 inter-semibold flex items-center gap-2">
                             <FiMapPin className="text-white" />
-                            <span>requesting_office / Barangay (Pangalan sa Opisina o Barangay)</span>
+                            <span>Requesting Office (Pangalan sa Opisina )</span>
                         </Label>
                         <div className="relative">
                             <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-orange-500">
