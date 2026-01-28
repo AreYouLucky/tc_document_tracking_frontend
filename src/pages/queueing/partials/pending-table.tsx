@@ -20,15 +20,6 @@ function PendingTable({
     const [secondsLeft, setSecondsLeft] = useState(AUTO_CHANGE_SECONDS);
     const [animate, setAnimate] = useState(false);
 
-    const parseDate = (date: string) => {
-        return new Date(date).toLocaleString("en-PH", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-    }
     const fetchCurrentData = async () => {
         setIsLoading(true);
         try {
