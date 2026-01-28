@@ -23,6 +23,8 @@ export default function DocumentBooking() {
         name: string;
         office: string;
         currentDate: string;
+        service: string;
+        code: string;
     } | null>(null);
     const { item, setItem, handleChange, errors, setErrors } = useHandleChange<FormValueTypes>({
         client_name: "",
@@ -37,6 +39,8 @@ export default function DocumentBooking() {
             day: "2-digit",
             month: "long",
             year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
         });
     }
     const createBooking = useCreateBooking();
@@ -57,7 +61,9 @@ export default function DocumentBooking() {
                         setPrintData({
                             name: data?.data?.client_name ?? item.client_name ?? "",
                             office: data?.data?.requesting_office ?? item.requesting_office ?? "",
+                            service: services?.find((s) => s.id === item.service_id)?.name ?? "",
                             currentDate: getCurrentDate(),
+                            code: data?.data?.queue_number ?? ""
                         });
                     }
                 },
@@ -226,7 +232,7 @@ export default function DocumentBooking() {
                 <ErrorDialog show={showErrorDialog} onClose={() => setShowErrorDialog(false)} />
             </BookingLayout>
             {printData && (
-                <CertificateOfAppearance name={printData.name} currentDate={printData.currentDate} />
+                <CertificateOfAppearance name={printData.name} currentDate={printData.currentDate} service={printData.service} code={printData.code} />
             )}
         </>
     );

@@ -11,7 +11,7 @@ export default function Header() {
     }, []);
 
     return (
-        <header className="flex justify-between items-center py-4 px-8">
+        <header className="flex justify-between items-center pt-4 px-16">
             <div className="flex flex-col gap-2">
                 <span className="inter-bold text-3xl md:x-5xl text-white">
                     Document Queueing System
