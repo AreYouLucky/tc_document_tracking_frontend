@@ -8,7 +8,7 @@ interface BookingLayoutProps {
 const BookingLayout: React.FC<BookingLayoutProps> = ({ children, className }) => {
   return (
     <div
-      className={`relative min-h-screen py-10 w-full flex items-center justify-center print:hidden ${className}`}
+      className={`relative min-h-screen py-20 w-full flex items-center justify-center print:hidden ${className}`}
       style={{
         backgroundImage: `url('/assets/background.jpg')`,
         backgroundSize: 'cover',
@@ -16,7 +16,7 @@ const BookingLayout: React.FC<BookingLayoutProps> = ({ children, className }) =>
       }}
     >
       <div className="absolute inset-0 bg-linear-to-b from-yellow-500/90 to-orange-500/90"></div>
-      <div className="relative z-10 flex flex-col min-h-screen w-full items-center">
+      <div className="relative z-10 flex flex-col  w-full items-center">
         <section className="w-full max-w-4xl">
           <article className="aspect-video bg-white rounded-xl overflow-hidden flex items-center justify-center">
             Insert advertisement video here
