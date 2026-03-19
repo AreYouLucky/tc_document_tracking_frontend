@@ -8,7 +8,11 @@ export function useFetchCompleteQueues() {
     return useQuery<QueuesTransactionModel[]>({
         queryKey: ["services"],
         queryFn: async () => {
-            const res = await axios.get(`${apiUrl}/api/get-transaction-status/completed`);
+            const res = await axios.get(`${apiUrl}/api/get-transaction-status/completed`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             return res.data;
         },
         staleTime: 1000 * 60,

@@ -32,7 +32,11 @@ function ReleasingTable({
     const fetchCurrentData = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`${apiUrl}/api/get-transaction-status/completed`);
+            const res = await axios.get(`${apiUrl}/api/get-transaction-status/completed`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             setData(res.data);
         } catch (err) {
             console.error(err);

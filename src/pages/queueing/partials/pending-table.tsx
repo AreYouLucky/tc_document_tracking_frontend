@@ -23,7 +23,11 @@ function PendingTable({
     const fetchCurrentData = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`${apiUrl}/api/get-transaction-waiting-processing`);
+            const res = await axios.get(`${apiUrl}/api/get-transaction-waiting-processing`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             setData(res.data);
         } catch (err) {
             console.error(err);
