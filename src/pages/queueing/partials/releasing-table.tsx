@@ -45,11 +45,18 @@ function ReleasingTable({
     }, []);
 
     useEffect(() => {
-        if (data.length === 0) return;
+        if (!data || data.length === 0) {
+            setPaginatedData([]);
+            setTotalPages(1);
+            setCompleted(0);
+            setCurrentPage(1);
+            return;
+        }
 
         const pages = Math.max(1, Math.ceil(data.length / ITEMS_PER_PAGE));
         setTotalPages(pages);
         setCompleted(data.length);
+
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
         setPaginatedData(data.slice(start, end));

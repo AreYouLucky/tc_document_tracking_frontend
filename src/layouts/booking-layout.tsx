@@ -18,8 +18,15 @@ const BookingLayout: React.FC<BookingLayoutProps> = ({ children, className }) =>
       <div className="absolute inset-0 bg-linear-to-b from-yellow-500/90 to-orange-500/90"></div>
       <div className="relative z-10 flex flex-col  w-full items-center">
         <section className="w-full max-w-4xl">
-          <article className="aspect-video bg-white rounded-xl overflow-hidden flex items-center justify-center">
-            Insert advertisement video here
+          <article className="aspect-video bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center border-white border-2">
+            <video
+              src="/assets/video.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="h-full aspect-video"
+            />
           </article>
         </section>
         <header className="flex flex-col items-center justify-center pt-12 md:pt-20 text-center">
