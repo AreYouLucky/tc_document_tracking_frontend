@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiArrowRightCircle, FiFileText, FiLoader } from "react-icons/fi";
 import BookingDetailsDialog from "../../components/booking-details-dialog";
 import PrintCode from "../../components/print-code";
