@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Button } from "./button";
-import { BiSolidError } from "react-icons/bi";
+import { FiAlertTriangle, FiX } from "react-icons/fi";
 import Modal from "./modal";
 
 type Props = {
@@ -39,24 +39,46 @@ function ErrorDialog({ show = false, onClose }: Props) {
 
     return (
         <Modal show={show} onClose={onClose}>
-            <div className="flex flex-col items-center text-center gap-5 max-w-md mx-auto rounded-3xl p-6 bg-linear-to-br from-red-50 to-red-100 shadow-2xl relative">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-tr from-red-400 to-red-600 shadow-lg animate-pulse">
-                    <BiSolidError className="text-white text-5xl font-bold" />
-                </div>
-                <p className="text-2xl font-extrabold text-red-700 inter-bold">
-                    Unexpected Error!
-                </p>
-                <p className="text-sm text-gray-600 mt-1 monst-regular">
-                    Please contact the systems administrator. Something went wrong.
-                </p>
-                <Button
-                    onClick={onClose}
-                    className="mt-2 w-full rounded-xl bg-red-600 px-6 py-3 text-sm font-bold text-white hover:bg-red-700 transition-transform transform hover:scale-105"
-                >
-                    Close (<span ref={countdownRef}>10s</span>)
-                </Button>
-            </div>
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/40 bg-linear-to-br from-rose-50 via-white to-orange-100 shadow-[0_24px_70px_rgba(15,23,42,0.24)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.88),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(251,146,60,0.16),transparent_35%)]" />
+                <div className="relative px-6 pb-7 pt-5 md:px-7">
+                    <div className="mx-auto mb-5 h-1.5 w-24 rounded-full bg-rose-200" />
 
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-rose-200 bg-white/90 text-rose-500 shadow-sm transition hover:bg-rose-50 hover:text-rose-600"
+                    >
+                        <FiX className="text-xl" />
+                    </button>
+
+                    <div className="flex flex-col items-center text-center">
+                        <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-[1.75rem] bg-linear-to-br from-rose-500 to-orange-500 text-white shadow-[0_18px_35px_rgba(244,63,94,0.24)]">
+                            <FiAlertTriangle className="text-5xl" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="inter-bold text-3xl text-slate-900">
+                                Submission Failed
+                            </p>
+                            <p className="rounded-full bg-rose-100 px-4 py-2 text-sm text-rose-700">
+                                Please review and try again
+                            </p>
+                        </div>
+
+                        <p className="mt-6 max-w-sm text-base leading-relaxed text-slate-600">
+                            Something went wrong while sending your request. If this keeps happening, please contact the system administrator.
+                        </p>
+
+                        <Button
+                            onClick={onClose}
+                            className="mt-7 h-14 w-full rounded-[1.25rem] bg-linear-to-r from-rose-500 to-orange-500 text-base text-white shadow-[0_14px_30px_rgba(244,63,94,0.22)] hover:from-rose-600 hover:to-orange-600"
+                        >
+                            Close Dialog (<span ref={countdownRef}>20s</span>)
+                        </Button>
+                    </div>
+                </div>
+            </div>
         </Modal>
     );
 }

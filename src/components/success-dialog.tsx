@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Button } from "./button";
-import { IoCheckmarkOutline } from "react-icons/io5";
+import { FiCheckCircle, FiX } from "react-icons/fi";
 import Modal from "./modal";
 
 type Props = {
@@ -40,30 +40,55 @@ function SuccessDialog({ show = false, onClose, code }: Props) {
 
     return (
         <Modal show={show} onClose={onClose}>
-            <div className="flex flex-col items-center text-center gap-5 max-w-md rounded-3xl p-6 bg-linear-to-br from-orange-50 to-orange-100 shadow-2xl print:hidden ">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-tr from-orange-400 to-orange-600 shadow-lg animate-pulse">
-                    <IoCheckmarkOutline className="text-white text-5xl font-bold" />
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/40 bg-linear-to-br from-orange-50 via-white to-amber-100 shadow-[0_24px_70px_rgba(15,23,42,0.24)] print:hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.9),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.22),transparent_35%)]" />
+                <div className="relative px-6 pb-7 pt-5 md:px-7">
+                    <div className="mx-auto mb-5 h-1.5 w-24 rounded-full bg-orange-200" />
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-orange-200 bg-white/90 text-orange-500 shadow-sm transition hover:bg-orange-50 hover:text-orange-600"
+                    >
+                        <FiX className="text-xl" />
+                    </button>
+
+                    <div className="flex flex-col items-center text-center">
+                        <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-[1.75rem] bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-[0_18px_35px_rgba(234,88,12,0.28)]">
+                            <FiCheckCircle className="text-5xl" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="inter-bold text-3xl text-slate-900">
+                                Request Submitted
+                            </p>
+                            <p className="rounded-full bg-orange-100 px-4 py-2 text-sm text-orange-700">
+                                Save this code for tracking
+                            </p>
+                        </div>
+
+                        <div className="mt-6 w-full rounded-[1.6rem] border border-orange-200 bg-white/90 px-6 py-5 shadow-[0_12px_28px_rgba(148,163,184,0.14)]">
+                            <p className="text-sm uppercase tracking-[0.28em] text-slate-500">
+                                Request Code
+                            </p>
+                            <p className="inter-bold mt-2 text-3xl tracking-[0.18em] text-orange-600 md:text-4xl">
+                                {code}
+                            </p>
+                        </div>
+
+                        <p className="mt-5 max-w-sm text-base leading-relaxed text-slate-600">
+                            Your document request has been received. Keep this request code handy for printing or status checking.
+                        </p>
+
+                        <Button
+                            onClick={onClose}
+                            className="mt-7 h-14 w-full rounded-[1.25rem] bg-linear-to-r from-orange-500 to-amber-500 text-base text-white shadow-[0_14px_30px_rgba(234,88,12,0.25)] hover:from-orange-600 hover:to-amber-600"
+                        >
+                            Close Dialog (<span ref={countdownRef}>20s</span>)
+                        </Button>
+                    </div>
                 </div>
-                <p className="text-2xl font-extrabold text-orange-700 inter-bold">
-                    Request Submitted!
-                </p>
-                <div className="bg-white rounded-xl px-6 py-3 w-full shadow-md">
-                    <p className="text-xl font-bold text-orange-600 tracking-wider inter-bold">
-                        {code}
-                    </p>
-                </div>
-                <p className="text-sm text-gray-600 mt-1 monst-regular">
-                    Your document request has been received. Keep your request code handy for tracking or printing.
-                </p>
-                <Button
-                    onClick={onClose}
-                    className="mt-4 w-full rounded-xl bg-orange-600 px-6 py-3 text-sm font-bold text-white hover:bg-orange-700 transition-transform transform hover:scale-105"
-                >
-                    Close (<span ref={countdownRef}>10s</span>)
-                </Button>
             </div>
-
-
         </Modal>
     );
 }

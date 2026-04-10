@@ -8,38 +8,23 @@ interface BookingLayoutProps {
 const BookingLayout: React.FC<BookingLayoutProps> = ({ children, className }) => {
   return (
     <div
-      className={`relative min-h-screen py-20 w-full flex items-center justify-center print:hidden ${className}`}
+      className={`relative min-h-screen w-full overflow-hidden py-10 print:hidden md:py-14 ${className}`}
       style={{
         backgroundImage: `url('/assets/background.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-linear-to-b from-yellow-500/90 to-orange-500/90"></div>
-      <div className="relative z-10 flex flex-col  w-full items-center">
-        <section className="w-full max-w-4xl">
-          <article className="aspect-video bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center border-white border-2">
-            <video
-              src="/assets/video.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="h-full aspect-video"
-            />
-          </article>
-        </section>
-        <header className="flex flex-col items-center justify-center pt-12 md:pt-20 text-center">
-          <img src="/assets/tc-logo.png" alt="Logo" className="h-12 md:h-22 lg:h-24 mb-4" />
-          <h1 className="text-white text-xl md:text-3xl font-extrabold inter-bold uppercase">
-            Submit Request for Document
-          </h1>
-          <span className="text-md text-lg inter-semibold text-white">
-            (Mag-request ug Dokumento)
-          </span>
+      <div className="absolute inset-0 bg-linear-to-br from-yellow-500/85 via-orange-500/88 to-amber-700/88"></div>
+      <div className="relative z-10 flex w-full flex-col items-center">
+        <header className="flex flex-col items-center justify-center px-4 pt-8 text-center md:py-8">
+          <div className=" px-5 ">
+            <img src="/assets/tc-logo.png" alt="Logo" className="mx-auto mb-4 h-14 md:h-20 lg:h-40" />
+          </div>
+
         </header>
-        <main className="flex-1 w-full flex justify-center my-6 px-4 md:px-8 lg:px-16">
-          <div className="w-full max-w-4xl space-y-6">
+        <main className="mb-6 flex w-full flex-1 justify-center px-4 md:px-8 lg:px-13">
+          <div className="w-full max-w-5xl space-y-6">
             <div className="w-full">
               {children}
             </div>

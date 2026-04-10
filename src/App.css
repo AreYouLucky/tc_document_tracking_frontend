@@ -4,6 +4,19 @@
   padding: 0;
 }
 
+.rubik-light {
+  font-family: "Rubik Mono One", monospace;
+  font-weight: 300;
+  font-style: normal;
+}
+.rubik-regular {
+  font-family: "Rubik Mono One", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+.rubik-bold {
+  font-family: "Rubik Mono One", monospace;
+}
 
 .inter-light {
   font-family: "Inter", sans-serif;
@@ -31,6 +44,53 @@
   font-optical-sizing: auto;
   font-weight: 600;
   font-style: normal;
+}
+
+.kiosk-float {
+  animation: kiosk-float 6s ease-in-out infinite;
+}
+
+.kiosk-rise {
+  animation: kiosk-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kiosk-pop {
+  animation: kiosk-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes kiosk-float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes kiosk-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kiosk-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @media print {
