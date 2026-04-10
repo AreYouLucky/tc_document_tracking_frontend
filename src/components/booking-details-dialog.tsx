@@ -58,12 +58,12 @@ function BookingDetailsDialog({
             leaveFrom="translate-y-0 opacity-100"
             leaveTo="translate-y-full opacity-0"
           >
-            <Dialog.Panel className="w-full max-w-4xl rounded-t-4xl border border-white/40 bg-linear-to-br from-orange-50 via-white to-amber-100 shadow-[0_-18px_50px_rgba(15,23,42,0.25)]">
+            <Dialog.Panel className="w-full max-w-4xl rounded-t-4xl border border-white/40 bg-orange-50 shadow-[0_-18px_50px_rgba(15,23,42,0.25)]">
               <div className="mx-auto mt-3 h-1.5 w-24 rounded-full bg-orange-200" />
 
-              <div className="px-5 pb-8 pt-4 md:px-8 md:pb-10">
+              <div className="px-5 pb-8 pt-10 md:px-8 md:pb-10">
                 <div className="mb-6 flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-4 mb-4">
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-lg">
                       <FiEdit3 className="text-3xl" />
                     </div>
@@ -71,7 +71,7 @@ function BookingDetailsDialog({
                       <Dialog.Title className="inter-bold text-3xl text-slate-900 md:text-4xl">
                         Add Your Details
                       </Dialog.Title>
-                      <p className="max-w-2xl text-base text-slate-600 md:text-lg">
+                      <p className="max-w-2xl text-2xl text-slate-600 md:text-lg">
                         {selectedServiceName} Request
                       </p>
                     </div>
@@ -86,9 +86,9 @@ function BookingDetailsDialog({
                   </button>
                 </div>
 
-                <div className="grid gap-8 mb-10">
+                <div className="grid gap-8 mb-15">
                   <div className="rounded-3xl">
-                    <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800">
+                    <Label className="inter-semibold mb-3 flex items-center gap-2 text-2xl text-slate-800">
                     <span className="text-orange-500 uppercase">Full Name</span>
                     </Label>
                     <div className="relative">
@@ -97,8 +97,7 @@ function BookingDetailsDialog({
                       </span>
                       <Input
                         name="client_name"
-                        placeholder="Ex: Juan Dela Cruz"
-                        className="h-18 rounded-2xl border-2 border-orange-200 bg-orange-50 pl-14 text-xl text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300/60"
+                        className="h-18 rounded-2xl border-2 border-orange-200 bg-white pl-14 text-2xl text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300/60"
                         value={clientName}
                         onChange={onFieldChange}
                       />
@@ -107,7 +106,7 @@ function BookingDetailsDialog({
                   </div>
 
                   <div className="rounded-3xl">
-                    <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800">
+                    <Label className="inter-semibold mb-3 flex items-center gap-2 text-2xl text-slate-800">
                       <span className="text-orange-500 uppercase">Requesting Office </span>
                       <span className="text-gray-400 text-sm">(Optional)</span>
                     </Label>
@@ -117,8 +116,7 @@ function BookingDetailsDialog({
                       </span>
                       <Input
                         name="requesting_office"
-                        placeholder="Ex: Maloro, Tangub City"
-                        className="h-18 rounded-2xl border-2 border-orange-200 bg-orange-50 pl-14 text-xl text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300/60"
+                        className="h-18 rounded-2xl border-2 border-orange-200 bg-white pl-14 text-2xl text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-300/60"
                         value={requestingOffice}
                         onChange={onFieldChange}
                       />

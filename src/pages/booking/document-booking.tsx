@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiArrowRightCircle, FiFileText, FiLoader } from "react-icons/fi";
+import {  FiFileText, FiLoader } from "react-icons/fi";
 import BookingDetailsDialog from "../../components/booking-details-dialog";
 import PrintCode from "../../components/print-code";
 import ErrorDialog from "../../components/error-dialog";
@@ -124,7 +124,7 @@ export default function DocumentBooking() {
                 <section className="print:hidden">
                     <div className="kiosk-rise relative overflow-hidden rounded-[2.25rem] border border-white/20  shadow-[0_24px_80px_rgba(15,23,42,0.18)] ">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(253,186,116,0.26),transparent_30%)]" />
-                        <div className="relative rounded-[1.75rem] bg-linear-to-br from-orange-50 via-white to-amber-100 p-5 md:p-8">
+                        <div className="relative rounded-[1.75rem] bg-orange-50 p-5 md:p-8">
 
                             <div className="space-y-6">
                                 <HeaderInfo />
@@ -148,7 +148,7 @@ export default function DocumentBooking() {
                                             <span>Loading documents...</span>
                                         </div>
                                     ) : (
-                                        <div className="grid gap-6 grid-cols-3 my-8">
+                                        <div className="grid gap-6  my-8">
                                             {services?.map((service: ServicesModel, index: number) => {
                                                 const isSelected = item.service_id === service.id;
 
@@ -157,35 +157,18 @@ export default function DocumentBooking() {
                                                         key={service.id}
                                                         type="button"
                                                         onClick={() => handleServiceSelect(service.id ?? 0)}
-                                                        className={`kiosk-pop group relative overflow-hidden rounded-[1.75rem] border-2 p-0 text-left transition-all duration-300 ${isSelected
-                                                            ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-[0_22px_45px_rgba(234,88,12,0.28)]"
+                                                        className={`kiosk-pop group  shadow-xl shadow-gray-200  relative overflow-hidden rounded-full border-2 text-left transition-all duration-300 ${isSelected
+                                                            ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white "
                                                             : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]"
                                                             }`}
                                                         style={{ animationDelay: `${index * 80}ms` }}
                                                     >
-                                                        <div className={`absolute inset-x-0 top-0 h-1.5 ${isSelected ? "bg-white/80" : "bg-linear-to-r from-orange-300 to-amber-300"}`} />
-                                                        <div className="flex min-h-56 flex-col justify-between gap-5 px-6 md:min-h-64 md:px-7 py-4">
-                                                            <div className="flex items-center justify-between gap-4">
-                                                                <div className={`flex h-16 w-16 items-center justify-center rounded-[1.3rem] ${isSelected ? "bg-white/15 text-white" : "bg-orange-100 text-orange-500"}`}>
-                                                                    <FiFileText className="text-3xl" />
-                                                                </div>
-                                                                <div className={`rounded-full px-4 py-2 text-sm inter-semibold md:text-base ${isSelected ? "bg-white/15 text-white" : "bg-orange-50 text-orange-600"}`}>
-                                                                    {isSelected ? "Selected" : "Choose"}
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="space-y-3">
-                                                                <p className="inter-bold text-xl leading-tight md:text-[1.5rem] ">
+                                                        <div className="flex  flex-row  justify-center items-center py-8">
+                                                            <div className="flex  flex-row gap-5">
+                                                                <FiFileText className="text-3xl" />
+                                                                <p className="inter-semibold text-3xl leading-tight ">
                                                                     {service.name}
                                                                 </p>
-                                                                <p className={`text-base leading-relaxed md:text-lg ${isSelected ? "text-orange-50" : "text-slate-600"}`}>
-                                                                    {service.description ?? "Tap here to start your request for this document."}
-                                                                </p>
-                                                            </div>
-
-                                                            <div className={` border-t py-4 inter-semibold inline-flex items-center gap-2 text-lg ${isSelected ? "text-white" : "text-orange-600"}`}>
-                                                                <span>Start Request</span>
-                                                                <FiArrowRightCircle className="text-2xl transition-transform duration-300 group-hover:translate-x-1" />
                                                             </div>
                                                         </div>
                                                     </button>

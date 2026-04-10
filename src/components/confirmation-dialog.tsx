@@ -17,9 +17,9 @@ function ConfirmationDialog({
 }: Props) {
     return (
         <Modal show={show} onClose={()=>{}}>
-            <div className="relative overflow-hidden rounded-2xl border border-white/40 bg-linear-to-br from-orange-50 via-white to-amber-100 shadow-[0_24px_70px_rgba(15,23,42,0.24)] print:hidden">
+            <div className="relative overflow-hidden rounded-2xl border border-white/40 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.24)] print:hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.9),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.2),transparent_35%)]" />
-                <div className="relative px-6 pb-7 pt-5 md:px-7">
+                <div className="relative px-6 pb-7 pt-5 md:px-10">
                     <div className="mx-auto mb-5 h-1.5 w-24 rounded-full bg-orange-200" />
 
                     <button
@@ -36,18 +36,11 @@ function ConfirmationDialog({
                             <FiCheckCircle className="text-5xl" />
                         </div>
 
-                        <div className="space-y-2">
-                            <h2 className="inter-bold text-3xl text-slate-900">
+                        <div className="space-y-2 my-4">
+                            <h2 className="inter-bold text-4xl text-slate-900">
                                 Confirm Submission
                             </h2>
-                            <p className="rounded-full bg-orange-100 px-4 py-2 text-sm text-orange-700">
-                                Final step before sending
-                            </p>
                         </div>
-
-                        <p className="mt-6 max-w-sm text-base leading-relaxed text-slate-600">
-                            You are about to submit this document request. Please make sure your details are correct before proceeding.
-                        </p>
 
                         <div className="mt-7 flex w-full flex-col-reverse gap-3 sm:flex-row">
                             <Button
@@ -60,7 +53,7 @@ function ConfirmationDialog({
                             <Button
                                 onClick={onConfirm}
                                 disabled={loading}
-                                className="h-14 flex-1 rounded-[1.25rem] bg-linear-to-r from-orange-500 to-amber-500 text-base text-white shadow-[0_14px_30px_rgba(234,88,12,0.25)] hover:from-orange-600 hover:to-amber-600"
+                                className="h-14 flex-1 rounded-[1.25rem] bg-orange-500 text-base text-white shadow-[0_14px_30px_rgba(234,88,12,0.25)] hover:from-orange-600 hover:to-amber-600"
                             >
                                 {loading ? "Processing..." : "Submit Request"}
                                 {!loading && <FiArrowRight className="text-lg" />}
