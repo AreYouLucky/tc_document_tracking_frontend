@@ -8,11 +8,12 @@ const ITEMS_PER_PAGE = 5;
 const AUTO_CHANGE_SECONDS = 10;
 
 function PendingTable({
+    pending,
     setPending,
 }: {
-    setPending: React.Dispatch<React.SetStateAction<number>>;
+    pending: QueuesTransactionModel[];
+    setPending: React.Dispatch<React.SetStateAction<QueuesTransactionModel[]>>;
 }) {
-    const [data, setData] = useState<QueuesTransactionModel[]>([]);
     const [paginatedData, setPaginatedData] = useState<QueuesTransactionModel[]>([]);
     const [totalPages, setTotalPages] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +29,8 @@ function PendingTable({
                     'Content-Type': 'application/json'
                 }
             });
-            setData(res.data);
+            const incomingData = Array.isArray(res.data) ? res.data : [];
+            setPending(incomingData);
         } catch (err) {
             console.error(err);
         } finally {
@@ -40,22 +42,20 @@ function PendingTable({
     }, []);
 
     useEffect(() => {
-        if (!data || data.length === 0) {
+        if (!pending || pending.length === 0) {
             setPaginatedData([]);
             setTotalPages(1);
-            setPending(0);
             setCurrentPage(1);
             return;
         }
 
-        const pages = Math.max(1, Math.ceil(data.length / ITEMS_PER_PAGE));
+        const pages = Math.max(1, Math.ceil(pending.length / ITEMS_PER_PAGE));
         setTotalPages(pages);
-        setPending(data.length);
 
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
-        setPaginatedData(data.slice(start, end));
-    }, [data, currentPage, setPending]);
+        setPaginatedData(pending.slice(start, end));
+    }, [pending, currentPage, setPending]);
 
     useEffect(() => {
         const interval = setInterval(() => {

@@ -19,3 +19,37 @@ export function useFetchCompleteQueues() {
         refetchOnWindowFocus: false
     });
 }
+
+
+export const getItemIdentityKey = (item: QueuesTransactionModel) => {
+    return `${item.queue_id ?? item.reference_no ?? "no-id"}-${item.queue_number ?? "no-number"}`;
+};
+
+export const getItemKey = (item: QueuesTransactionModel) => {
+    return [
+        getItemIdentityKey(item),
+        item.status ?? "no-status",
+        item.current_step ?? "no-step",
+        item.completed_at ?? "no-time",
+    ].join("-");
+};
+
+const formatQueueNumber = (queueNumber: string | null) => {
+    return queueNumber?.split("").join(" ") ?? "";
+};
+
+export const buildSpeechText = (item: QueuesTransactionModel) => {
+    const speakCode = formatQueueNumber(item.queue_number);
+    const currentStep = item.current_step?.trim();
+    const status = item.status?.toLowerCase();
+
+    if (status === "completed" || item.completed_at) {
+        return `Queue Number ${speakCode} is now ready for releasing. You may get your requested document at the releasing area.`;
+    }
+
+    if (currentStep) {
+        return `Queue Number ${speakCode} is now at ${currentStep}.`;
+    }
+
+    return `Queue Number ${speakCode} has been updated.`;
+};
