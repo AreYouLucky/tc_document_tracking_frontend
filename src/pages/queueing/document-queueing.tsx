@@ -15,6 +15,7 @@ function DocumentQueueing() {
     const [speechQueue, setSpeechQueue] = useState<QueuesTransactionModel[]>([]);
     const isSpeakingRef = useRef(false);
     const readCountsRef = useRef<Map<string, number>>(new Map());
+    const [speechEnabled, setSpeechEnabled] = useState(false);
 
     const incomingData = useMemo(
         () => [...pending, ...completed],
@@ -77,6 +78,8 @@ function DocumentQueueing() {
 
 
     useEffect(() => {
+        if (!speechEnabled) return; // 🚫 block until user clicks
+
         if (speechQueue.length === 0 || isSpeakingRef.current) {
             return;
         }
@@ -127,12 +130,24 @@ function DocumentQueueing() {
         utterance.onerror = handleFinish;
 
         speechSynthesis.speak(utterance);
-    }, [speechQueue, selectedVoice]);
+    }, [speechQueue, selectedVoice, speechEnabled]);
 
     useEffect(() => {
         return () => {
             speechSynthesis.cancel();
         };
+    }, []);
+
+    useEffect(() => {
+        const unlock = () => {
+            setSpeechEnabled(true);
+            speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+            window.removeEventListener("click", unlock);
+        };
+
+        window.addEventListener("click", unlock);
+
+        return () => window.removeEventListener("click", unlock);
     }, []);
 
     return (
