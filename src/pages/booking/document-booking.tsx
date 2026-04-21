@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {  FiFileText, FiLoader } from "react-icons/fi";
+import { FiFileText, FiLoader } from "react-icons/fi";
 import BookingDetailsDialog from "../../components/booking-details-dialog";
 import PrintCode from "../../components/print-code";
 import ErrorDialog from "../../components/error-dialog";
@@ -8,7 +8,7 @@ import SuccessDialog from "../../components/success-dialog";
 import BookingLayout from "../../layouts/booking-layout";
 import type { ServicesModel } from "../../types/models";
 import { useHandleChange } from "../../utils/utilities";
-import { type FormValueTypes, useCreateBooking, useFetchServices } from "./partials/booking-hooks";
+import { type FormValueTypes, useCreateBooking, useRequestCoa, useFetchServices } from "./partials/booking-hooks";
 import HeaderInfo from "./partials/header-info";
 import ConfirmationDialog from "../../components/confirmation-dialog";
 
@@ -25,9 +25,13 @@ export default function DocumentBooking() {
     const { item, setItem, handleChange, errors, setErrors } = useHandleChange<FormValueTypes>({
         client_name: "",
         requesting_office: "",
+        position: "",
+        purpose: "",
+        contact_no: "",
         service_id: null,
         queue_number: "",
         currentDate: "",
+        type: 1
     });
 
     const selectedService = services?.find((service) => service.id === item.service_id);
@@ -42,12 +46,14 @@ export default function DocumentBooking() {
         setItem((prev) => ({
             ...prev,
             service_id: serviceId,
+            type: 1
         }));
         setErrors((prev) => ({
             ...prev,
             service_id: undefined,
         }));
-        setShowDetailsDialog(true);
+
+        setShowConfirmation(true);
     };
 
     const handleDetailsContinue = () => {
@@ -72,8 +78,6 @@ export default function DocumentBooking() {
     const createBookingFn = () => {
         setShowConfirmation(false);
         const formData = new FormData();
-        formData.append("client_name", item.client_name!);
-        formData.append("requesting_office", item.requesting_office!);
         formData.append("service_id", String(item.service_id!));
 
         createBooking.mutate(formData, {
@@ -103,6 +107,57 @@ export default function DocumentBooking() {
         });
     };
 
+    const requestCoa = useRequestCoa();
+    const requestCoaFn = () => {
+        setShowConfirmation(false);
+        const formData = new FormData();
+        formData.append("service_id", String(item.service_id ?? ''));
+        formData.append("fullname", String(item.client_name ?? ''));
+        formData.append("requesting_office", String(item.requesting_office ?? ''));
+        formData.append("position", String(item.position ?? ''));
+        formData.append("purpose", String(item.purpose ?? ''));
+        formData.append("contact_no", String(item.contact_no ?? ''));
+
+        requestCoa.mutate(formData, {
+            onSuccess: (data) => {
+                setShowSuccessDialog(true);
+                if (data) {
+                    setItem({
+                        ...item,
+                        queue_number: data.data?.queue_number ?? "",
+                    });
+                    setPrintData({
+                        code: data?.data?.queue_number ?? "",
+                    });
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            window.print();
+                        });
+                    });
+                }
+            },
+            onError: (error) => {
+                if (error.response?.data?.errors) {
+                    setErrors(error.response?.data.errors ?? {});
+                }
+                setShowErrorDialog(true);
+            },
+        });
+    }
+    const handleCoaRequest = () => {
+        setItem({
+            client_name: "",
+            requesting_office: "",
+            service_id: null,
+            queue_number: "",
+            position: "",
+            purpose: "",
+            contact_no: "",
+            type: 2
+        });
+        setShowDetailsDialog(true);
+    }
+
 
     const closeSuccessDialog = () => {
         setShowSuccessDialog(false);
@@ -111,12 +166,16 @@ export default function DocumentBooking() {
             requesting_office: "",
             service_id: null,
             queue_number: "",
+            position: "",
+            purpose: "",
+            contact_no: "",
+            type: 1
         });
         createBooking.reset();
     };
 
     const isSubmitDisabled =
-        !item.client_name?.trim() || !item.service_id || isFetching || createBooking.isPending;
+        !item.client_name?.trim() || isFetching || createBooking.isPending || requestCoa.isPending;
 
     return (
         <>
@@ -149,6 +208,24 @@ export default function DocumentBooking() {
                                         </div>
                                     ) : (
                                         <div className="grid gap-6  my-8">
+                                            <button
+                                                type="button"
+                                                onClick={handleCoaRequest}
+                                                className={`kiosk-pop group  shadow-xl shadow-gray-200  relative overflow-hidden rounded-full border-2 text-left transition-all duration-300 ${item.type === 2
+                                                    ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white "
+                                                    : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]"
+                                                    }`}
+                                                style={{ animationDelay: `80ms` }}
+                                            >
+                                                <div className="flex  flex-row  justify-center items-center py-8">
+                                                    <div className="flex  flex-row gap-5">
+                                                        <FiFileText className="text-3xl" />
+                                                        <p className="inter-semibold text-3xl leading-tight ">
+                                                            Certificate of Appearance
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </button>
                                             {services?.map((service: ServicesModel, index: number) => {
                                                 const isSelected = item.service_id === service.id;
 
@@ -188,11 +265,17 @@ export default function DocumentBooking() {
                     show={showDetailsDialog}
                     onClose={() => setShowDetailsDialog(false)}
                     onContinue={handleDetailsContinue}
-                    selectedServiceName={selectedService?.name ?? "Selected Document"}
+                    selectedServiceName={selectedService?.name ?? "Certificate of Appearance"}
                     clientName={item.client_name || ""}
                     requestingOffice={item.requesting_office || ""}
+                    position={item.position || ""}
+                    purpose={item.purpose || ""}
+                    contactNo={item.contact_no || ""}
                     clientNameError={getErrorMessage(errors.client_name)}
                     requestingOfficeError={getErrorMessage(errors.requesting_office)}
+                    positionError={getErrorMessage(errors.position)}
+                    purposeError={getErrorMessage(errors.purpose)}
+                    contactNoError={getErrorMessage(errors.contact_no)}
                     onFieldChange={handleChange}
                     isSubmitDisabled={isSubmitDisabled}
                 />
@@ -201,9 +284,15 @@ export default function DocumentBooking() {
             </BookingLayout>
             <ConfirmationDialog
                 show={showConfirmation}
-                onClose={() => { setShowConfirmation(false); setShowDetailsDialog(true) }}
-                onConfirm={createBookingFn}
-                loading={createBooking.isPending}
+                onClose={() => {
+                    setShowConfirmation(false);
+
+                    if (item?.type === 2) {
+                        setShowDetailsDialog(true);
+                    }
+                }}
+                onConfirm={item.type === 1 ? createBookingFn : requestCoaFn}
+                loading={createBooking.isPending || requestCoa.isPending}
             />
             {printData && (
                 <PrintCode

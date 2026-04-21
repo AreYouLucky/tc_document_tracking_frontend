@@ -8,9 +8,13 @@ const apiUrl = import.meta.env.VITE_API_MAIN_URL;
 export type FormValueTypes = {
   client_name: string | null;
   requesting_office: string | null;
+  position?: string;
+  contact_no?: string;
+  purpose?: string;
   service_id: number | null;
   queue_number: string | null;
-  currentDate?: string
+  currentDate?: string;
+  type: number;
 };
 
 type ApiOk = { status: string; data?: QueuesModel; errors: undefined; queue_number: string };
@@ -40,6 +44,19 @@ export function useCreateBooking() {
   return useMutation<ApiOk, AxiosError<ApiError>, FormData>({
     mutationFn: async (data) => {
       const res = await axios.post(`${apiUrl}/api/queue`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["queues"] });
+    },
+  });
+}
+
+export function useRequestCoa() {
+  const queryClient = useQueryClient();
+  return useMutation<ApiOk, AxiosError<ApiError>, FormData>({
+    mutationFn: async (data) => {
+      const res = await axios.post(`${apiUrl}/api/request-ca`, data);
       return res.data;
     },
     onSuccess: () => {

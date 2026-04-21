@@ -38,7 +38,7 @@ function ConfirmationDialog({
 
                         <div className="space-y-2 my-4">
                             <h2 className="inter-bold text-4xl text-slate-900">
-                                Confirm Submission
+                                Confirm Request
                             </h2>
                         </div>
 
