@@ -1,53 +1,54 @@
 import QueueingLayout from "../../layouts/queueing-layout"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import CardTotal from "../../components/card-total"
 import ReleasingTable from "./partials/releasing-table"
 import PendingTable from "./partials/pending-table"
 import { type QueuesTransactionModel } from "../../types/models"
-import { echo } from "../../utils/echo"
-import { type TtsModel } from "../../types/models"
+import { getItemKey, getItemIdentityKey, buildSpeechText, } from "./partials/queueing-hooks"
 
-type TtsQueueItem = {
-    id: number;
-    tts_message: string;
-    readCount: number;
-}
 
 function DocumentQueueing() {
 
     const [completed, setCompleted] = useState<QueuesTransactionModel[]>([])
     const [pending, setPending] = useState<QueuesTransactionModel[]>([])
     const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
-    const [speechQueue, setSpeechQueue] = useState<TtsQueueItem[]>([]);
+    const [speechQueue, setSpeechQueue] = useState<QueuesTransactionModel[]>([]);
     const isSpeakingRef = useRef(false);
-    const nextTtsIdRef = useRef(1);
+    const readCountsRef = useRef<Map<string, number>>(new Map());
     const [speechEnabled, setSpeechEnabled] = useState(false);
 
+    const incomingData = useMemo(
+        () => [...pending, ...completed],
+        [pending, completed]
+    );
 
     useEffect(() => {
-        const channel = echo.channel("queue-channel");
+        setSpeechQueue(prevQueue => {
+            const latestItemsByIdentity = new Map<string, QueuesTransactionModel>();
 
-        channel.listen(".queue.broadcast", (e: TtsModel) => {
-            const message = e.message?.trim();
-            console.log(e);
-            if (!message) {
-                return;
+            incomingData.forEach(item => {
+                latestItemsByIdentity.set(getItemIdentityKey(item), item);
+            });
+
+            const latestKeys = new Set(
+                Array.from(latestItemsByIdentity.values()).map(getItemKey)
+            );
+
+            const activeQueue = prevQueue.filter(item => latestKeys.has(getItemKey(item)));
+            const queuedKeys = new Set(activeQueue.map(getItemKey));
+
+            const updatedQueueItems = Array.from(latestItemsByIdentity.values()).filter(item => {
+                const itemKey = getItemKey(item);
+                return !queuedKeys.has(itemKey) && (readCountsRef.current.get(itemKey) ?? 0) < 2;
+            });
+
+            if (activeQueue.length === prevQueue.length && updatedQueueItems.length === 0) {
+                return prevQueue;
             }
 
-            setSpeechQueue(prevQueue => [
-                ...prevQueue,
-                {
-                    id: nextTtsIdRef.current++,
-                    tts_message: message,
-                    readCount: 0,
-                },
-            ]);
+            return updatedQueueItems.length > 0 ? [...activeQueue, ...updatedQueueItems] : activeQueue;
         });
-
-        return () => {
-            echo.leave("test-channel");
-        };
-    }, []);
+    }, [incomingData])
 
     useEffect(() => {
         const pickFemaleVoice = () => {
@@ -90,7 +91,9 @@ function DocumentQueueing() {
 
         isSpeakingRef.current = true;
 
-        const utterance = new SpeechSynthesisUtterance(currentItem.tts_message);
+        const itemKey = getItemKey(currentItem);
+        const speakText = buildSpeechText(currentItem);
+        const utterance = new SpeechSynthesisUtterance(speakText);
 
         utterance.rate = 0.7;
         utterance.pitch = 1;
@@ -101,27 +104,25 @@ function DocumentQueueing() {
         }
 
         const handleFinish = () => {
+            const nextReadCount = (readCountsRef.current.get(itemKey) ?? 0) + 1;
+            readCountsRef.current.set(itemKey, nextReadCount);
             isSpeakingRef.current = false;
 
             setSpeechQueue(prevQueue => {
-                const [finishedItem, ...remainingQueue] = prevQueue;
+                const finishedItemIndex = prevQueue.findIndex(item => getItemKey(item) === itemKey);
 
-                if (!finishedItem || finishedItem.id !== currentItem.id) {
+                if (finishedItemIndex === -1) {
                     return prevQueue;
                 }
 
-                const nextReadCount = finishedItem.readCount + 1;
-                if (nextReadCount >= 2) {
-                    return remainingQueue;
+                const nextQueue = [...prevQueue];
+                const [finishedItem] = nextQueue.splice(finishedItemIndex, 1);
+
+                if (nextReadCount < 2 && finishedItem) {
+                    return [...nextQueue, finishedItem];
                 }
 
-                return [
-                    {
-                        ...finishedItem,
-                        readCount: nextReadCount,
-                    },
-                    ...remainingQueue,
-                ];
+                return nextQueue;
             });
         };
 

@@ -27,3 +27,8 @@ export type QueuesTransactionModel = {
     requesting_office: string | null;
     completed_at: string | null;
 }
+
+export type TtsModel = {
+    tts_message: string | null;
+    message?: string;
+}

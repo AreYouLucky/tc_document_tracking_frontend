@@ -4,7 +4,7 @@ import { type QueuesTransactionModel } from "../../../types/models";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_MAIN_URL;
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 3;
 const AUTO_CHANGE_SECONDS = 10;
 
 function PendingTable({
