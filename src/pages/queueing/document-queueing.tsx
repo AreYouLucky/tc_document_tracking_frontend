@@ -175,7 +175,7 @@ function DocumentQueueing() {
                 <div>
                     <div className="bg-white/90 rounded-2xl px-8 pb-5 pt-5 ">
                         <p className="text-orange-600 inter-bold text-center text-4xl py-2 uppercase">
-                            Releasing
+                            Release
                         </p>
                         <ReleasingTable completed={completed} setCompleted={setCompleted} />
                     </div>
