@@ -94,9 +94,6 @@ function PendingTable({
                             <th className="px-6 py-4 text-center text-lg inter-bold uppercase bg-orange-500 text-white border-r">
                                 Queue No.
                             </th>
-                            <th className="px-6 py-4 text-center text-lg inter-bold uppercase bg-orange-500 text-white border-r">
-                                Document Information
-                            </th>
                             <th className="px-6 py-4 text-center text-lg inter-bold uppercase bg-orange-500 text-white">
                                 Status
                             </th>
@@ -108,30 +105,16 @@ function PendingTable({
                             paginatedData.map((item, index) => (
                                 <tr
                                     key={index}
-                                    className="border-b border-gray-100 last:border-b-0 hover:bg-orange-50/40 transition-colors"
+                                    className="border-b border-gray-400 last:border-b-0 hover:bg-orange-50/40 transition-colors"
                                 >
-                                    <td className="px-4 py-4 text-center inter-bold text-orange-600 text-xl">
-                                        {item.queue_number}
+                                    <td className="px-4 py-4 text-center inter-bold text-orange-600 text-6xl space-y-4">
+                                        <p>
+                                            {item.queue_number}
+                                        </p>
+                                        <p className="text-2xl text-gray-700">
+                                            {item.service}
+                                        </p>
                                     </td>
-
-                                    <td className="px-4 py-4 align-top">
-                                        <div className="flex flex-col">
-                                            <p className="inter-bold text-slate-800 text-base">
-                                                {item.service}
-                                            </p>
-                                            <p className="text-gray-700">
-                                                <span className="font-medium">Client:</span>{" "}
-                                                {item.client_name}
-                                            </p>
-                                            <p className="text-gray-700">
-                                                <span className="font-medium">
-                                                    Requesting Office:
-                                                </span>{" "}
-                                                {item.requesting_office}
-                                            </p>
-                                        </div>
-                                    </td>
-
                                     <td className="px-4 py-4 align-top text-gray-600">
                                         <p className={`${item.status === "processing" ? "text-sky-600" : "text-orange-600"} text-base inter-bold text-center uppercase`}>{item.status}</p>
                                         <p className="text-[12px] text-slate-800 inter-semibold text-center">{item.current_step}</p>

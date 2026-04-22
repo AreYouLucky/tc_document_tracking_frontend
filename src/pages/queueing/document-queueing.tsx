@@ -159,10 +159,10 @@ function DocumentQueueing() {
                         </p>
                         <PendingTable pending={pending} setPending={setPending} />
                     </div>
-                    <div className="grid grid-cols-2 gap-6">
+                    {/* <div className="grid grid-cols-2 gap-6">
                         <CardTotal total={completed.length} subtitle="Total Releasing" />
                         <CardTotal total={pending.length} subtitle="Total Pending" />
-                    </div>
+                    </div> */}
                 </div>
                 <div>
                     <div className="bg-white/90 rounded-2xl px-8 pb-5 pt-5 ">
