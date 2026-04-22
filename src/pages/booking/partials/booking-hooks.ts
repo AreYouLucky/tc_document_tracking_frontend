@@ -65,3 +65,16 @@ export function useRequestCoa() {
     },
   });
 }
+
+export function useRequestOthers() {
+  const queryClient = useQueryClient();
+  return useMutation<ApiOk, AxiosError<ApiError>, FormData>({
+    mutationFn: async (data) => {
+      const res = await axios.post(`${apiUrl}/api/request-others`, data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["queues"] });
+    },
+  });
+}

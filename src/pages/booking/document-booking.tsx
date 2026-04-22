@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiFileText, FiLoader } from "react-icons/fi";
+import { FiArrowRight, FiFileText, FiLayers, FiLoader, FiStar } from "react-icons/fi";
 import BookingDetailsDialog from "../../components/booking-details-dialog";
 import PrintCode from "../../components/print-code";
 import ErrorDialog from "../../components/error-dialog";
@@ -8,10 +8,9 @@ import SuccessDialog from "../../components/success-dialog";
 import BookingLayout from "../../layouts/booking-layout";
 import type { ServicesModel } from "../../types/models";
 import { useHandleChange } from "../../utils/utilities";
-import { type FormValueTypes, useCreateBooking, useRequestCoa, useFetchServices } from "./partials/booking-hooks";
+import { type FormValueTypes, useCreateBooking, useRequestCoa, useFetchServices, useRequestOthers } from "./partials/booking-hooks";
 import HeaderInfo from "./partials/header-info";
 import ConfirmationDialog from "../../components/confirmation-dialog";
-
 export default function DocumentBooking() {
     const { data: services, isFetching } = useFetchServices();
     const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -36,6 +35,12 @@ export default function DocumentBooking() {
     });
 
     const selectedService = services?.find((service) => service.id === item.service_id);
+    const selectedServiceName =
+        item.type === 2
+            ? "Certificate of Appearance"
+            : item.type === 3
+                ? "Other Services"
+                : selectedService?.name ?? "Document Request";
     const createBooking = useCreateBooking();
 
     const getErrorMessage = (value: unknown) => {
@@ -89,8 +94,7 @@ export default function DocumentBooking() {
 
     const createBookingFn = () => {
         setShowConfirmation(false);
-        const formData = new FormData();
-        formData.append("service_id", String(item.service_id!));
+        const formData = createFormData();
 
         createBooking.mutate(formData, {
             onSuccess: (data) => {
@@ -119,17 +123,25 @@ export default function DocumentBooking() {
         });
     };
 
-    const requestCoa = useRequestCoa();
-    const requestCoaFn = () => {
-        setShowConfirmation(false);
+    const createFormData = () => {
         const formData = new FormData();
-        formData.append("service_id", String(item.service_id ?? ''));
+        if (item.type === 1) {
+            formData.append("service_id", String(item.service_id ?? ''));
+        }
         formData.append("fullname", String(item.client_name ?? ''));
-        formData.append("sex", String(item.sex ?? ''));
         formData.append("requesting_office", String(item.requesting_office ?? ''));
         formData.append("position", String(item.position ?? ''));
         formData.append("purpose", String(item.purpose ?? ''));
         formData.append("contact_no", String(item.contact_no ?? ''));
+        formData.append("sex", String(item.sex ?? ''));
+        return formData
+    }
+
+    const requestCoa = useRequestCoa();
+    const requestCoaFn = () => {
+        setShowConfirmation(false);
+        const formData = createFormData();
+
 
         requestCoa.mutate(formData, {
             onSuccess: (data) => {
@@ -172,6 +184,22 @@ export default function DocumentBooking() {
         setShowDetailsDialog(true);
     }
 
+    const handleOtherRequest = () => {
+        setItem({
+            client_name: "",
+            sex: "",
+            requesting_office: "",
+            service_id: null,
+            queue_number: "",
+            position: "",
+            purpose: "",
+            contact_no: "",
+            type: 3
+        });
+        setShowDetailsDialog(true);
+    }
+
+
 
     const closeSuccessDialog = () => {
         setShowSuccessDialog(false);
@@ -189,21 +217,71 @@ export default function DocumentBooking() {
         createBooking.reset();
     };
 
+    const requestOthers = useRequestOthers();
+    const requestOthersFn = () => {
+        setShowConfirmation(false);
+        const formData = createFormData();
+
+
+        requestOthers.mutate(formData, {
+            onSuccess: (data) => {
+                setShowSuccessDialog(true);
+                if (data) {
+                    setItem({
+                        ...item,
+                        queue_number: data.data?.queue_number ?? "",
+                    });
+                    setPrintData({
+                        code: data?.data?.queue_number ?? "",
+                    });
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            window.print();
+                        });
+                    });
+                }
+            },
+            onError: (error) => {
+                if (error.response?.data?.errors) {
+                    setErrors(error.response?.data.errors ?? {});
+                }
+                setShowErrorDialog(true);
+            },
+        });
+    }
+
     const isSubmitDisabled =
-        !item.client_name?.trim() || !item.sex || isFetching || createBooking.isPending || requestCoa.isPending;
+        !item.client_name?.trim() ||
+        !item.sex ||
+        isFetching ||
+        createBooking.isPending ||
+        requestCoa.isPending ||
+        requestOthers.isPending;
+
+    const getCardClassName = (isSelected: boolean, tone: "primary" | "accent" = "primary") => {
+        if (isSelected) {
+            return tone === "accent"
+                ? "border-amber-500 bg-linear-to-br from-amber-500 to-orange-500 text-white shadow-[0_24px_44px_rgba(217,119,6,0.26)]"
+                : "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-[0_24px_44px_rgba(234,88,12,0.24)]";
+        }
+
+        return tone === "accent"
+            ? "border-amber-200 bg-white/95 text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.14)] hover:-translate-y-1 hover:border-amber-300 hover:shadow-[0_22px_40px_rgba(217,119,6,0.16)]"
+            : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-300 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]";
+    };
 
     return (
         <>
             <BookingLayout>
                 <section className="print:hidden">
-                    <div className="kiosk-rise relative overflow-hidden rounded-[2.25rem] border border-white/20  shadow-[0_24px_80px_rgba(15,23,42,0.18)] ">
+                    <div className="kiosk-rise relative overflow-hidden rounded-[2.25rem] border border-white/20 shadow-[0_24px_80px_rgba(15,23,42,0.18)]">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.16),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(253,186,116,0.26),transparent_30%)]" />
                         <div className="relative rounded-[1.75rem] bg-orange-50 p-5 md:p-8">
 
                             <div className="space-y-6">
                                 <HeaderInfo />
 
-                                <div className="space-y-4 mt-10 px-5">
+                                <div className="mt-10 space-y-6 px-5">
                                     <div className="flex items-center justify-between gap-4">
                                         <div>
                                             <p className="inter-bold text-2xl text-slate-900 md:text-3xl">Choose a Document</p>
@@ -222,52 +300,105 @@ export default function DocumentBooking() {
                                             <span>Loading documents...</span>
                                         </div>
                                     ) : (
-                                        <div className="grid gap-6  my-8">
-                                            {services?.map((service: ServicesModel, index: number) => {
-                                                const isSelected = item.service_id === service.id;
+                                        <div className="rounded-2xl border border-orange-200/80 bg-white/70 p-4 shadow-[0_20px_45px_rgba(148,163,184,0.12)] backdrop-blur-sm md:p-6">
+                                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                                <div>
+                                                    <div className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800">
+                                                        <FiLayers className="text-base" />
+                                                        Main Services
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                return (
-                                                    <button
-                                                        key={service.id}
-                                                        type="button"
-                                                        onClick={() => handleServiceSelect(service.id ?? 0)}
-                                                        className={`kiosk-pop group  shadow-xl shadow-gray-200  relative overflow-hidden rounded-full border-2 text-left transition-all duration-300 ${isSelected
-                                                            ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white "
-                                                            : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]"
-                                                            }`}
-                                                        style={{ animationDelay: `${index * 80}ms` }}
-                                                    >
-                                                        <div className="flex  flex-row  justify-center items-center py-8">
-                                                            <div className="flex  flex-row gap-5">
-                                                                <FiFileText className="text-3xl" />
-                                                                <p className="inter-semibold text-3xl leading-tight ">
-                                                                    {service.name}
-                                                                </p>
+                                            <div className="mt-6 grid gap-5">
+                                                {services?.map((service: ServicesModel, index: number) => {
+                                                    const isSelected = item.service_id === service.id;
+
+                                                    return (
+                                                        <button
+                                                            key={service.id}
+                                                            type="button"
+                                                            onClick={() => handleServiceSelect(service.id ?? 0)}
+                                                            className={`kiosk-pop group relative overflow-hidden rounded-[1.75rem] border-2 text-left transition-all duration-300 ${getCardClassName(isSelected)}`}
+                                                            style={{ animationDelay: `${index * 80}ms` }}
+                                                        >
+                                                            <div className="absolute inset-y-0 right-0 w-32 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.18),transparent_70%)] opacity-70" />
+                                                            <div className="relative flex items-center justify-between gap-4 px-6 py-6 md:px-8 md:py-7">
+                                                                <div className="flex items-center gap-4 md:gap-5">
+                                                                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${isSelected ? "bg-white/20" : "bg-orange-100 text-orange-600"}`}>
+                                                                        <FiFileText className="text-2xl md:text-3xl" />
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="inter-semibold text-2xl leading-tight md:text-3xl">
+                                                                            {service.name}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <FiArrowRight className={`shrink-0 text-2xl transition-transform duration-300 group-hover:translate-x-1 ${isSelected ? "text-white" : "text-orange-500"}`} />
                                                             </div>
-                                                        </div>
-                                                    </button>
-                                                );
-                                            })}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className="rounded-2xl border border-amber-200/90 bg-linear-to-br from-amber-50 via-orange-50 to-white p-4 shadow-[0_22px_45px_rgba(245,158,11,0.12)] md:p-6">
+                                        <div className="flex flex-col gap-3  md:flex-row md:items-center md:justify-between">
+                                            <div>
+                                                <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-900">
+                                                    <FiStar className="text-base" />
+                                                    Special Requests
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-6 grid gap-5 md:grid-cols-2">
                                             <button
                                                 type="button"
                                                 onClick={handleCoaRequest}
-                                                className={`kiosk-pop group  shadow-xl shadow-gray-200  relative overflow-hidden rounded-full border-2 text-left transition-all duration-300 ${item.type === 2
-                                                    ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white "
-                                                    : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]"
-                                                    }`}
+                                                className={`kiosk-pop group relative overflow-hidden rounded-[1.75rem] border-2 text-left transition-all duration-300 ${getCardClassName(item.type === 2, "accent")}`}
                                                 style={{ animationDelay: `80ms` }}
                                             >
-                                                <div className="flex  flex-row  justify-center items-center py-8">
-                                                    <div className="flex  flex-row gap-5">
-                                                        <FiFileText className="text-3xl" />
-                                                        <p className="inter-semibold text-3xl leading-tight ">
-                                                            Certificate of Appearance
-                                                        </p>
+                                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_42%)]" />
+                                                <div className="relative flex h-full flex-col justify-between gap-6 px-6 py-6 md:px-7 md:py-7">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.type === 2 ? "bg-white/20" : "bg-amber-100 text-amber-600"}`}>
+                                                            <FiFileText className="text-2xl md:text-3xl" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="inter-semibold text-2xl leading-tight md:text-[1.85rem]">
+                                                                Certificate of Appearance
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={handleOtherRequest}
+                                                className={`kiosk-pop group relative overflow-hidden rounded-[1.75rem] border-2 text-left transition-all duration-300 ${getCardClassName(item.type === 3, "accent")}`}
+                                                style={{ animationDelay: `140ms` }}
+                                            >
+                                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_42%)]" />
+                                                <div className="relative flex h-full flex-col justify-between gap-6 px-6 py-6 md:px-7 md:py-7">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.type === 3 ? "bg-white/20" : "bg-amber-100 text-amber-600"}`}>
+                                                            <FiFileText className="text-2xl md:text-3xl" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="inter-semibold text-2xl leading-tight md:text-[1.85rem]">
+                                                                Other Services
+                                                            </p>
+                                                            <p className={`mt-1 text-sm  ${item.type === 3 ? "text-orange-50/90" : "text-slate-500"}`}>
+                                                                If the service you need is not in the main list
+                                                            </p>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                            </button>
                                         </div>
-                                    )}
+                                    </div>
 
                                     <InputError message={getErrorMessage(errors.service_id)} className="text-base" />
                                 </div>
@@ -280,7 +411,7 @@ export default function DocumentBooking() {
                     show={showDetailsDialog}
                     onClose={() => setShowDetailsDialog(false)}
                     onContinue={handleDetailsContinue}
-                    selectedServiceName={selectedService?.name ?? "Certificate of Appearance"}
+                    selectedServiceName={selectedServiceName}
                     clientName={item.client_name || ""}
                     sex={item.sex || ""}
                     requestingOffice={item.requesting_office || ""}
@@ -305,12 +436,12 @@ export default function DocumentBooking() {
                 onClose={() => {
                     setShowConfirmation(false);
 
-                    if (item?.type === 2) {
+                    if (item?.type !== 1) {
                         setShowDetailsDialog(true);
                     }
                 }}
-                onConfirm={item.type === 1 ? createBookingFn : requestCoaFn}
-                loading={createBooking.isPending || requestCoa.isPending}
+                onConfirm={item.type === 1 ? createBookingFn : item.type === 2 ? requestCoaFn : item.type === 3 ? requestOthersFn : createBookingFn}
+                loading={createBooking.isPending || requestCoa.isPending || requestOthers.isPending}
             />
             {printData && (
                 <PrintCode
