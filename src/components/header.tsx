@@ -11,13 +11,13 @@ export default function Header() {
     }, []);
 
     return (
-        <header className="flex justify-between items-center pt-4 px-16">
+        <header className="flex justify-between items-center pt-4 px-16 mb-5">
             <div className="flex flex-col gap-2">
-                <span className="inter-bold text-3xl md:x-5xl text-white">
+                <span className="inter-bold text-4xl text-white">
                     Document Queueing System
                 </span>
 
-                <span className="inter-bold text-[13px] lg:text-[15px] rounded-lg w-fit text-white">
+                <span className="inter-bold text-[13px] lg:text-xl rounded-lg w-fit text-white">
                     {now.toLocaleDateString(undefined, {
                         weekday: "long",
                         year: "numeric",
@@ -31,7 +31,7 @@ export default function Header() {
             <img
                 src="/assets/tc-logo.png"
                 alt="Logo"
-                className="h-12 md:h-18"
+                className="h-12 md:h-25"
             />
         </header>
 

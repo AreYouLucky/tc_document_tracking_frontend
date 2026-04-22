@@ -38,6 +38,20 @@ const formatQueueNumber = (queueNumber: string | null) => {
     return queueNumber?.split("").join(" ") ?? "";
 };
 
+export const getQueueNumberTextClass = (queueNumber: string | null) => {
+    const length = queueNumber?.trim().length ?? 0;
+
+    if (length >= 12) {
+        return "text-3xl md:text-5xl lg:text-5xl";
+    }
+
+    if (length >= 7) {
+        return "text-5xl md:text-6xl lg:text-6xl";
+    }
+
+    return "text-6xl md:text-7xl lg:text-[5rem]";
+};
+
 export const buildSpeechText = (item: QueuesTransactionModel) => {
     const speakCode = formatQueueNumber(item.queue_number);
     const currentStep = item.current_step?.trim();

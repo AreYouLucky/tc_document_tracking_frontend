@@ -5,6 +5,7 @@ import {
   FiChevronDown,
   FiEdit3,
   FiFileText,
+  FiHeart,
   FiMapPin,
   FiPhone,
   FiUser,
@@ -13,6 +14,7 @@ import { Button } from "./button";
 import InputError from "./input-error";
 import { Input } from "./input";
 import { Label } from "./label";
+import { Select } from "./select";
 import { Textarea } from "./text-area";
 
 type Props = {
@@ -21,18 +23,21 @@ type Props = {
   onContinue: () => void;
   selectedServiceName: string;
   clientName: string;
+  sex: string;
   requestingOffice: string;
   position: string;
   purpose: string;
   contactNo: string;
   clientNameError?: string;
+  sexError?: string;
   requestingOfficeError?: string;
   positionError?: string;
   purposeError?: string;
   contactNoError?: string;
   isSubmitDisabled: boolean;
+  onSexChange: (value: string) => void;
   onFieldChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
 };
 
@@ -42,16 +47,19 @@ function BookingDetailsDialog({
   onContinue,
   selectedServiceName,
   clientName,
+  sex,
   requestingOffice,
   position,
   purpose,
   contactNo,
   clientNameError,
+  sexError,
   requestingOfficeError,
   positionError,
   purposeError,
   contactNoError,
   isSubmitDisabled,
+  onSexChange,
   onFieldChange,
 }: Props) {
   const inputClassName =
@@ -140,24 +148,23 @@ function BookingDetailsDialog({
 
                     <div className="">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
-                        <span className="text-orange-500 uppercase">Barangay | Requesting Office</span>
-                        <span className="text-orange-400 text-sm">(Optional)</span>
+                        <span className="text-orange-500 uppercase">Sex</span>
                       </Label>
-                      <div className="relative">
-                        <span className={iconClassName}>
-                          <FiMapPin className="text-2xl" />
-                        </span>
-                        <Input
-                          name="requesting_office"
-                          className={inputClassName}
-                          value={requestingOffice}
-                          onChange={onFieldChange}
-                        />
-                      </div>
-                      <InputError message={requestingOfficeError} className="mt-2 text-base" />
+                      <Select
+                        value={sex}
+                        onChange={onSexChange}
+                        icon={<FiHeart className="text-2xl" />}
+                        placeholder=""
+                        options={[
+                          { label: "Male", value: "Male" },
+                          { label: "Female", value: "Female" },
+                        ]}
+                        buttonClassName={inputClassName}
+                      />
+                      <InputError message={sexError} className="mt-2 text-base" />
                     </div>
 
-                    <div className="">
+                     <div className="">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Designation</span>
                         <span className="text-orange-400 text-sm">(Optional)</span>
@@ -175,6 +182,27 @@ function BookingDetailsDialog({
                       </div>
                       <InputError message={positionError} className="mt-2 text-base" />
                     </div>
+
+                    <div className="col-span-2">
+                      <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
+                        <span className="text-orange-500 uppercase">Barangay | Requesting Office</span>
+                        <span className="text-orange-400 text-sm">(Optional)</span>
+                      </Label>
+                      <div className="relative">
+                        <span className={iconClassName}>
+                          <FiMapPin className="text-2xl" />
+                        </span>
+                        <Input
+                          name="requesting_office"
+                          className={inputClassName}
+                          value={requestingOffice}
+                          onChange={onFieldChange}
+                        />
+                      </div>
+                      <InputError message={requestingOfficeError} className="mt-2 text-base" />
+                    </div>
+
+                   
 
                     <div className=" md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">

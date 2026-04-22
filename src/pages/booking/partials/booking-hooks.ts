@@ -7,6 +7,7 @@ const apiUrl = import.meta.env.VITE_API_MAIN_URL;
 
 export type FormValueTypes = {
   client_name: string | null;
+  sex?: string;
   requesting_office: string | null;
   position?: string;
   contact_no?: string;

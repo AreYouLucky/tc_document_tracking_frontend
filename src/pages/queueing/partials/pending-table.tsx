@@ -2,6 +2,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { type QueuesTransactionModel } from "../../../types/models";
 import axios from "axios";
+import { getQueueNumberTextClass } from "./queueing-hooks";
 const apiUrl = import.meta.env.VITE_API_MAIN_URL;
 
 const ITEMS_PER_PAGE = 3;
@@ -86,15 +87,15 @@ function PendingTable({
 
             <div className=" ">
                 <table
-                    className={`min-w-full text-sm transition-opacity duration-300 ${animate ? "opacity-0" : "opacity-100"
+                    className={`min-w-full table-fixed text-sm transition-opacity duration-300 ${animate ? "opacity-0" : "opacity-100"
                         }`}
                 >
                     <thead>
                         <tr>
-                            <th className="px-6 py-4 text-center text-lg inter-bold uppercase bg-orange-500 text-white border-r">
+                            <th className="w-[58%] px-6 py-5 text-center text-xl inter-bold uppercase bg-orange-500 text-white border-r border-orange-300">
                                 Queue No.
                             </th>
-                            <th className="px-6 py-4 text-center text-lg inter-bold uppercase bg-orange-500 text-white">
+                            <th className="w-[42%] px-6 py-5 text-center text-xl inter-bold uppercase bg-orange-500 text-white">
                                 Status
                             </th>
                         </tr>
@@ -105,19 +106,23 @@ function PendingTable({
                             paginatedData.map((item, index) => (
                                 <tr
                                     key={index}
-                                    className="border-b border-gray-400 last:border-b-0 hover:bg-orange-50/40 transition-colors"
+                                    className=" last:border-b-0 hover:bg-orange-50/40 transition-colors"
                                 >
-                                    <td className="px-4 py-4 text-center inter-bold text-orange-600 text-6xl space-y-4">
-                                        <p>
+                                    <td className="px-10 py-7 text-start text-orange-600 border-r border-slate-200">
+                                        <p className={`inter-bold leading-none tracking-[0.05em] ${getQueueNumberTextClass(item.queue_number)}`}>
                                             {item.queue_number}
                                         </p>
-                                        <p className="text-2xl text-gray-700">
+                                        <p className="mt-3 text-2xl text-gray-700 inter-semibold leading-tight">
                                             {item.service}
                                         </p>
                                     </td>
-                                    <td className="px-4 py-4 align-top text-gray-600">
-                                        <p className={`${item.status === "processing" ? "text-sky-600" : "text-orange-600"} text-base inter-bold text-center uppercase`}>{item.status}</p>
-                                        <p className="text-[12px] text-slate-800 inter-semibold text-center">{item.current_step}</p>
+                                    <td className="px-6 py-7 align-middle text-gray-600">
+                                        <p className={` ${item.status === "processing" ? "text-sky-600" : "text-orange-600"} text-4xl inter-bold text-center uppercase leading-tight`}>
+                                            {item.status}
+                                        </p>
+                                        <p className="mt-2 text-2xl text-slate-800 inter-semibold text-center leading-snug">
+                                            {item.current_step}
+                                        </p>
                                     </td>
                                 </tr>
                             ))
@@ -135,14 +140,14 @@ function PendingTable({
                         )}
                     </tbody>
                 </table>
-                <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-600 border-t border-gray-100">
+                <div className="flex justify-between items-center px-5 py-3 text-lg text-gray-600 border-t border-gray-100">
                     <span>
                         Page <span className="font-semibold">{currentPage}</span> of{" "}
                         <span className="font-semibold">{totalPages}</span>
                     </span>
                     <span>
                         Next page in{" "}
-                        <span className="font-bold text-orange-600">
+                        <span className="font-bold text-orange-600 text-2xl">
                             {secondsLeft}s
                         </span>
                     </span>

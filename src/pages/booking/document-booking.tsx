@@ -24,6 +24,7 @@ export default function DocumentBooking() {
 
     const { item, setItem, handleChange, errors, setErrors } = useHandleChange<FormValueTypes>({
         client_name: "",
+        sex: "",
         requesting_office: "",
         position: "",
         purpose: "",
@@ -53,7 +54,18 @@ export default function DocumentBooking() {
             service_id: undefined,
         }));
 
-        setShowConfirmation(true);
+        setShowDetailsDialog(true)
+    };
+
+    const handleSexChange = (value: string) => {
+        setItem((prev) => ({
+            ...prev,
+            sex: value,
+        }));
+        setErrors((prev) => ({
+            ...prev,
+            sex: undefined,
+        }));
     };
 
     const handleDetailsContinue = () => {
@@ -113,6 +125,7 @@ export default function DocumentBooking() {
         const formData = new FormData();
         formData.append("service_id", String(item.service_id ?? ''));
         formData.append("fullname", String(item.client_name ?? ''));
+        formData.append("sex", String(item.sex ?? ''));
         formData.append("requesting_office", String(item.requesting_office ?? ''));
         formData.append("position", String(item.position ?? ''));
         formData.append("purpose", String(item.purpose ?? ''));
@@ -147,6 +160,7 @@ export default function DocumentBooking() {
     const handleCoaRequest = () => {
         setItem({
             client_name: "",
+            sex: "",
             requesting_office: "",
             service_id: null,
             queue_number: "",
@@ -163,6 +177,7 @@ export default function DocumentBooking() {
         setShowSuccessDialog(false);
         setItem({
             client_name: "",
+            sex: "",
             requesting_office: "",
             service_id: null,
             queue_number: "",
@@ -175,7 +190,7 @@ export default function DocumentBooking() {
     };
 
     const isSubmitDisabled =
-        !item.client_name?.trim() || isFetching || createBooking.isPending || requestCoa.isPending;
+        !item.client_name?.trim() || !item.sex || isFetching || createBooking.isPending || requestCoa.isPending;
 
     return (
         <>
@@ -208,24 +223,6 @@ export default function DocumentBooking() {
                                         </div>
                                     ) : (
                                         <div className="grid gap-6  my-8">
-                                            <button
-                                                type="button"
-                                                onClick={handleCoaRequest}
-                                                className={`kiosk-pop group  shadow-xl shadow-gray-200  relative overflow-hidden rounded-full border-2 text-left transition-all duration-300 ${item.type === 2
-                                                    ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white "
-                                                    : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]"
-                                                    }`}
-                                                style={{ animationDelay: `80ms` }}
-                                            >
-                                                <div className="flex  flex-row  justify-center items-center py-8">
-                                                    <div className="flex  flex-row gap-5">
-                                                        <FiFileText className="text-3xl" />
-                                                        <p className="inter-semibold text-3xl leading-tight ">
-                                                            Certificate of Appearance
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </button>
                                             {services?.map((service: ServicesModel, index: number) => {
                                                 const isSelected = item.service_id === service.id;
 
@@ -251,6 +248,24 @@ export default function DocumentBooking() {
                                                     </button>
                                                 );
                                             })}
+                                            <button
+                                                type="button"
+                                                onClick={handleCoaRequest}
+                                                className={`kiosk-pop group  shadow-xl shadow-gray-200  relative overflow-hidden rounded-full border-2 text-left transition-all duration-300 ${item.type === 2
+                                                    ? "border-orange-500 bg-linear-to-br from-orange-500 to-amber-500 text-white "
+                                                    : "border-orange-200 bg-white text-slate-800 shadow-[0_18px_35px_rgba(148,163,184,0.16)] hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_40px_rgba(234,88,12,0.16)]"
+                                                    }`}
+                                                style={{ animationDelay: `80ms` }}
+                                            >
+                                                <div className="flex  flex-row  justify-center items-center py-8">
+                                                    <div className="flex  flex-row gap-5">
+                                                        <FiFileText className="text-3xl" />
+                                                        <p className="inter-semibold text-3xl leading-tight ">
+                                                            Certificate of Appearance
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </button>
                                         </div>
                                     )}
 
@@ -267,15 +282,18 @@ export default function DocumentBooking() {
                     onContinue={handleDetailsContinue}
                     selectedServiceName={selectedService?.name ?? "Certificate of Appearance"}
                     clientName={item.client_name || ""}
+                    sex={item.sex || ""}
                     requestingOffice={item.requesting_office || ""}
                     position={item.position || ""}
                     purpose={item.purpose || ""}
                     contactNo={item.contact_no || ""}
                     clientNameError={getErrorMessage(errors.client_name)}
+                    sexError={getErrorMessage(errors.sex)}
                     requestingOfficeError={getErrorMessage(errors.requesting_office)}
                     positionError={getErrorMessage(errors.position)}
                     purposeError={getErrorMessage(errors.purpose)}
                     contactNoError={getErrorMessage(errors.contact_no)}
+                    onSexChange={handleSexChange}
                     onFieldChange={handleChange}
                     isSubmitDisabled={isSubmitDisabled}
                 />
