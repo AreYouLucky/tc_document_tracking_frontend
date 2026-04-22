@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "./button";
 export default function Header() {
     const [now, setNow] = useState(new Date());
 
@@ -19,11 +18,6 @@ export default function Header() {
                 </span>
 
                 <span className="inter-bold text-[13px] lg:text-[15px] rounded-lg w-fit text-white">
-                    <Button
-                        className="bg-orange-500 text-white border border-orange-50 px-4 py-2 hover:scale-105 duration-300 mr-2"
-                    >
-                        Enable Voice
-                    </Button>
                     {now.toLocaleDateString(undefined, {
                         weekday: "long",
                         year: "numeric",

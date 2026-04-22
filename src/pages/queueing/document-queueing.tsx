@@ -1,6 +1,5 @@
 import QueueingLayout from "../../layouts/queueing-layout"
 import { useState, useRef, useEffect } from "react"
-import CardTotal from "../../components/card-total"
 import ReleasingTable from "./partials/releasing-table"
 import PendingTable from "./partials/pending-table"
 import { type QueuesTransactionModel } from "../../types/models"
@@ -22,6 +21,7 @@ function DocumentQueueing() {
     const isSpeakingRef = useRef(false);
     const nextTtsIdRef = useRef(1);
     const [speechEnabled, setSpeechEnabled] = useState(false);
+    const [showStartOverlay, setShowStartOverlay] = useState(true);
 
 
     useEffect(() => {
@@ -137,21 +137,29 @@ function DocumentQueueing() {
         };
     }, []);
 
-    useEffect(() => {
-        const unlock = () => {
-            setSpeechEnabled(true);
-            speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-            window.removeEventListener("click", unlock);
-        };
-
-        window.addEventListener("click", unlock);
-
-        return () => window.removeEventListener("click", unlock);
-    }, []);
+    const handleStartQueueing = () => {
+        setSpeechEnabled(true);
+        speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+        setShowStartOverlay(false);
+    };
 
     return (
         <QueueingLayout>
-            <div className="grid md:grid-cols-2  gap-6 py-4">
+            {showStartOverlay ? (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 backdrop-blur-sm">
+
+                    <button
+                        type="button"
+                        onClick={handleStartQueueing}
+                        className="font-extrabold rounded-full bg-linear-to-r from-orange-500 to-amber-500 px-15 py-3 text-6xl text-white shadow-[0_18px_35px_rgba(234,88,12,0.28)] transition-transform duration-200 hover:scale-[1.02] uppercase inter-bold "
+                    >
+                        Start
+                    </button>
+
+                </div>
+            ) : null}
+
+            <div className="grid md:grid-cols-2 gap-6 py-4">
                 <div className="flex flex-col gap-4">
                     <div className="bg-white/90 rounded-2xl px-8 pb-5 pt-5 ">
                         <p className="text-orange-600 inter-bold text-center text-3xl py-2">
