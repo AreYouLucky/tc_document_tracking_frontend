@@ -136,10 +136,10 @@ export default function DocumentBooking() {
         if (item.type === 1) {
             formData.append("service_id", String(item.service_id ?? ''));
         }
-        formData.append("fullname", String(item.client_name ?? ''));
+        formData.append("client_name", String(item.client_name ?? ''));
         formData.append("requesting_office", String(item.requesting_office ?? ''));
         formData.append("position", String(item.position ?? ''));
-        formData.append("purpose", String(item.purpose ?? ''));
+        formData.append("remarks", String(item.purpose ?? ''));
         formData.append("contact_no", String(item.contact_no ?? ''));
         formData.append("sex", String(item.sex ?? ''));
         return formData
