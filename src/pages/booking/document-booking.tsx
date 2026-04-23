@@ -52,7 +52,15 @@ export default function DocumentBooking() {
         setItem((prev) => ({
             ...prev,
             service_id: serviceId,
-            type: 1
+            type: 1,
+            client_name: "",
+            sex: "",
+            requesting_office: "",
+            queue_number: "",
+            position: "",
+            purpose: "",
+            contact_no: "",
+
         }));
         setErrors((prev) => ({
             ...prev,
@@ -394,7 +402,7 @@ export default function DocumentBooking() {
                                                                 If the service you need is not in the main list
                                                             </p>
                                                         </div>
-                                                    </div>  
+                                                    </div>
                                                 </div>
                                             </button>
                                         </div>

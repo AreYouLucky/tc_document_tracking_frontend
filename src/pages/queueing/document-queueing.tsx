@@ -151,7 +151,7 @@ function DocumentQueueing() {
                     <button
                         type="button"
                         onClick={handleStartQueueing}
-                        className="font-extrabold rounded-full bg-linear-to-r from-orange-500 to-amber-500 px-15 py-3 text-6xl text-white shadow-[0_18px_35px_rgba(234,88,12,0.28)] transition-transform duration-200 hover:scale-[1.02] uppercase inter-bold border-4 border-white"
+                        className="font-extrabold rounded-full bg-linear-to-r from-orange-500 to-amber-500 px-20 py-7 text-6xl text-white shadow-[0_18px_35px_rgba(234,88,12,0.28)] transition-transform duration-200 hover:scale-[1.05] uppercase inter-bold border-8 border-white"
                     >
                         Start
                     </button>

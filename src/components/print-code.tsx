@@ -4,29 +4,25 @@ type Props = {
 
 function PrintCode({ code }: Props) {
   return (
-    <div id="print-coa" className="hidden print:flex justify-center">
+    <div id="print-coa" className="hidden print:flex items-center justify-center">
       <div
         style={{
-          width: "58mm", 
-          padding: "10px",
+          width: "58mm",
+          padding: "0",
           fontFamily: "monospace",
-          fontSize: "12px",
-          lineHeight: "1.4",
+          textAlign: "center",
         }}
       >
-        <div style={{ textAlign: "center", margin: "12px 0" }}>
-          <div style={{ marginBottom: "6px" }}>QUEUE NUMBER:</div>
-          <div
-            style={{
-              fontSize: "18px",
-              fontWeight: "bold",
-              letterSpacing: "2px",
-            }}
-          >
-            {code}
-          </div>
+        <div
+          style={{
+            fontSize: "32px",
+            fontWeight: "bold",
+            letterSpacing: "2px",
+            lineHeight: "1",
+          }}
+        >
+          {code}
         </div>
-
       </div>
     </div>
   );
