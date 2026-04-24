@@ -10,7 +10,7 @@ const portalLinks = [
     icon: FiCalendar,
     accent: 'from-amber-300 via-orange-300 to-yellow-100',
     buttonClass:
-      'bg-slate-950 text-amber-100 hover:bg-slate-900 focus-visible:ring-amber-200',
+      'border border-orange-200 bg-orange-500 text-white shadow-[0_14px_30px_rgba(234,88,12,0.18)] hover:border-orange-300 hover:bg-orange-600 focus-visible:ring-orange-200',
   },
   {
     title: 'Queue Page',
@@ -20,7 +20,7 @@ const portalLinks = [
     icon: FiList,
     accent: 'from-sky-300 via-cyan-200 to-white',
     buttonClass:
-      'bg-teal-700 text-white hover:bg-teal-600 focus-visible:ring-teal-200',
+      'border border-orange-200 bg-white text-orange-700 shadow-[0_14px_30px_rgba(148,163,184,0.14)] hover:border-orange-300 hover:bg-orange-50 focus-visible:ring-orange-200',
   },
 ]
 
@@ -63,7 +63,7 @@ function FrontPage() {
             {portalLinks.map(({ title, description, to, icon: Icon, accent, buttonClass }) => (
               <article
                 key={to}
-                className="group rounded-[2rem] border border-white/15 bg-white/12 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.38)] backdrop-blur-md transition-transform duration-300 hover:-translate-y-1"
+                className="group rounded-[2rem] border border-white/70 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.24)] transition-transform duration-300 hover:-translate-y-1"
               >
                 <div
                   className={`mb-5 inline-flex rounded-2xl bg-gradient-to-br ${accent} p-4 text-slate-950 shadow-lg`}
@@ -72,8 +72,8 @@ function FrontPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <h2 className="text-2xl font-bold text-white">{title}</h2>
-                  <p className="text-sm leading-6 text-white/80">{description}</p>
+                  <h2 className="text-2xl font-bold text-slate-900">{title}</h2>
+                  <p className="text-sm leading-6 text-slate-600">{description}</p>
                 </div>
 
                 <Link
