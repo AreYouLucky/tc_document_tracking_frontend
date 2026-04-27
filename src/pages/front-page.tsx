@@ -63,10 +63,10 @@ function FrontPage() {
             {portalLinks.map(({ title, description, to, icon: Icon, accent, buttonClass }) => (
               <article
                 key={to}
-                className="group rounded-[2rem] border border-white/70 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.24)] transition-transform duration-300 hover:-translate-y-1"
+                className="group rounded-2xl border border-white/70 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.24)] transition-transform duration-300 hover:-translate-y-1"
               >
                 <div
-                  className={`mb-5 inline-flex rounded-2xl bg-gradient-to-br ${accent} p-4 text-slate-950 shadow-lg`}
+                  className={`mb-5 inline-flex rounded-2xl bg-linear-to-br ${accent} p-4 text-slate-950 shadow-lg`}
                 >
                   <Icon className="h-7 w-7" />
                 </div>
