@@ -16,7 +16,7 @@ function PrintCode({ code }: Props) {
 
         <div
           style={{
-            fontSize: "32px",
+            fontSize: "26px",
             fontWeight: "bold",
             letterSpacing: "2px",
             marginTop: "4px",
