@@ -4,21 +4,22 @@ type Props = {
 
 function PrintCode({ code }: Props) {
   return (
-    <div id="print-coa" className="hidden print:flex items-center justify-center">
+    <div id="print-coa">
       <div
         style={{
-          width: "58mm",
-          padding: "0",
-          fontFamily: "monospace",
+          width: "100%",
           textAlign: "center",
+          fontFamily: "monospace",
         }}
       >
+        <div style={{ fontSize: "14px" }}>QUEUE NO</div>
+
         <div
           style={{
             fontSize: "32px",
             fontWeight: "bold",
             letterSpacing: "2px",
-            lineHeight: "1",
+            marginTop: "4px",
           }}
         >
           {code}
