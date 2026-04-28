@@ -12,7 +12,7 @@ function PrintCode({ code }: Props) {
           fontFamily: "monospace",
         }}
       >
-        <div style={{ fontSize: "14px" }}>QUEUE NO</div>
+        <div style={{ fontSize: "14px", marginLeft: "20px" }}>QUEUE NO</div>
 
         <div
           style={{
