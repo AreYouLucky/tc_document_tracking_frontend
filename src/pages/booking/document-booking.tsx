@@ -8,15 +8,45 @@ import SuccessDialog from "../../components/success-dialog";
 import BookingLayout from "../../layouts/booking-layout";
 import type { ServicesModel } from "../../types/models";
 import { useHandleChange } from "../../utils/utilities";
-import { type FormValueTypes, useCreateBooking, useRequestCoa, useFetchServices, useRequestOthers } from "./partials/booking-hooks";
+import {
+    type BudgetMonitoring,
+    type FormValueTypes,
+    type Office,
+    useCheckOfficeBalance,
+    useCreateBooking,
+    useFetchOffices,
+    useFetchServices,
+    useRequestCoa,
+    useRequestOthers,
+} from "./partials/booking-hooks";
 import HeaderInfo from "./partials/header-info";
 import ConfirmationDialog from "../../components/confirmation-dialog";
+import { GrCertificate } from "react-icons/gr";
+import { MdOutlinePageview } from "react-icons/md";
+import { TbCashRegister } from "react-icons/tb";
+import CheckBalanceDialog from "../../components/check-balance/check-balance-dialog";
+import CheckBalanceSuccess from "../../components/check-balance/check-balance-sucess";
+import CheckBalanceIncorrect from "../../components/check-balance/check-balance-incorrect";
 export default function DocumentBooking() {
     const { data: services, isFetching } = useFetchServices();
+    const { data: offices = [], isFetching: isFetchingOffices } = useFetchOffices();
     const [showSuccessDialog, setShowSuccessDialog] = useState(false);
     const [showErrorDialog, setShowErrorDialog] = useState(false);
     const [showDetailsDialog, setShowDetailsDialog] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showCheckBalanceDialog, setShowCheckBalanceDialog] = useState(false);
+    const [showCheckBalanceSuccess, setShowCheckBalanceSuccess] = useState(false);
+    const [showCheckBalanceIncorrect, setShowCheckBalanceIncorrect] = useState(false);
+    const [selectedOfficeId, setSelectedOfficeId] = useState("");
+    const [selectedOfficeName, setSelectedOfficeName] = useState("");
+    const [balancePin, setBalancePin] = useState("");
+    const [balanceOffice, setBalanceOffice] = useState<Office | null>(null);
+    const [budgetMonitoring, setBudgetMonitoring] = useState<BudgetMonitoring[]>([]);
+    const [checkBalanceMessage, setCheckBalanceMessage] = useState("Incorrect PIN. Please try again.");
+    const [checkBalanceErrors, setCheckBalanceErrors] = useState<{
+        office?: string;
+        pin?: string;
+    }>({});
     const [printData, setPrintData] = useState<{
         code: string;
     } | null>(null);
@@ -42,10 +72,44 @@ export default function DocumentBooking() {
                 ? "Other Services"
                 : selectedService?.name ?? "Document Request";
     const createBooking = useCreateBooking();
+    const checkOfficeBalance = useCheckOfficeBalance();
+    const isCheckBalanceActive =
+        showCheckBalanceDialog || showCheckBalanceSuccess || showCheckBalanceIncorrect;
 
     const getErrorMessage = (value: unknown) => {
         if (Array.isArray(value)) return value[0] ?? "";
         return typeof value === "string" ? value : "";
+    };
+
+    const resetCheckBalanceForm = () => {
+        setSelectedOfficeId("");
+        setSelectedOfficeName("");
+        setBalancePin("");
+        setBalanceOffice(null);
+        setBudgetMonitoring([]);
+        setCheckBalanceErrors({});
+        setCheckBalanceMessage("Incorrect PIN. Please try again.");
+        checkOfficeBalance.reset();
+    };
+
+    const openCheckBalanceDialog = () => {
+        resetCheckBalanceForm();
+        setShowCheckBalanceDialog(true);
+    };
+
+    const closeCheckBalanceDialog = () => {
+        setShowCheckBalanceDialog(false);
+        setCheckBalanceErrors({});
+    };
+
+    const closeCheckBalanceSuccess = () => {
+        setShowCheckBalanceSuccess(false);
+        resetCheckBalanceForm();
+    };
+
+    const closeCheckBalanceIncorrect = () => {
+        setShowCheckBalanceIncorrect(false);
+        setCheckBalanceMessage("Incorrect PIN. Please try again.");
     };
 
     const handleServiceSelect = (serviceId: number) => {
@@ -98,6 +162,71 @@ export default function DocumentBooking() {
 
         setShowDetailsDialog(false);
         setShowConfirmation(true)
+    };
+
+    const handleOfficeChange = (value: string) => {
+        const office = offices.find((entry) => entry.id === value);
+        setSelectedOfficeId(value);
+        setSelectedOfficeName(office?.name ?? "");
+        setCheckBalanceErrors((prev) => ({
+            ...prev,
+            office: undefined,
+        }));
+    };
+
+    const handleBalancePinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setBalancePin(event.target.value);
+        setCheckBalanceErrors((prev) => ({
+            ...prev,
+            pin: undefined,
+        }));
+    };
+
+    const handleCheckBalanceSubmit = () => {
+        const nextErrors: {
+            office?: string;
+            pin?: string;
+        } = {};
+
+        if (!selectedOfficeId) {
+            nextErrors.office = "Please select an office.";
+        }
+
+        if (!balancePin.trim()) {
+            nextErrors.pin = "Please enter your PIN.";
+        }
+
+        if (Object.keys(nextErrors).length > 0) {
+            setCheckBalanceErrors(nextErrors);
+            return;
+        }
+
+        checkOfficeBalance.mutate(
+            {
+                officeId: selectedOfficeId,
+                pin: balancePin.trim(),
+            },
+            {
+                onSuccess: (data) => {
+                    const office = data.data[0] ?? null;
+
+                    setBalanceOffice(office);
+                    setSelectedOfficeName(office?.name ?? selectedOfficeName);
+                    setBudgetMonitoring(office?.budget_monitoring ?? []);
+                    setShowCheckBalanceDialog(false);
+                    setShowCheckBalanceSuccess(true);
+                },
+                onError: (error) => {
+                    const message =
+                        error.response?.data?.message ||
+                        "Incorrect PIN. Please try again.";
+
+                    setCheckBalanceMessage(message);
+                    setShowCheckBalanceDialog(false);
+                    setShowCheckBalanceIncorrect(true);
+                },
+            }
+        );
     };
 
     const createBookingFn = () => {
@@ -371,10 +500,10 @@ export default function DocumentBooking() {
                                                 <div className="relative flex h-full flex-col justify-between gap-6 px-6 py-6 md:px-7 md:py-7">
                                                     <div className="flex items-center gap-4">
                                                         <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.type === 2 ? "bg-white/20" : "bg-amber-100 text-amber-600"}`}>
-                                                            <FiFileText className="text-2xl md:text-3xl" />
+                                                            <GrCertificate className="text-2xl md:text-3xl" />
                                                         </div>
                                                         <div>
-                                                            <p className="inter-semibold text-2xl leading-tight md:text-[1.85rem]">
+                                                            <p className="inter-semibold text-2xl leading-tight md:text-[1.6rem]">
                                                                 Certificate of Appearance
                                                             </p>
                                                         </div>
@@ -384,15 +513,35 @@ export default function DocumentBooking() {
 
                                             <button
                                                 type="button"
+                                                onClick={openCheckBalanceDialog}
+                                                className={`kiosk-pop group relative overflow-hidden rounded-[1.75rem] border-2 text-left transition-all duration-300 ${getCardClassName(isCheckBalanceActive, "accent")}`}
+                                                style={{ animationDelay: `140ms` }}
+                                            >
+                                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_42%)]" />
+                                                <div className="relative flex h-full flex-col justify-center gap-6 px-6 py-6 md:px-7 md:py-7">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${isCheckBalanceActive ? "bg-white/20" : "bg-amber-100 text-amber-600"}`}>
+                                                            <TbCashRegister className="text-2xl md:text-3xl" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="inter-semibold text-2xl leading-tight md:text-[1.85rem]">
+                                                                Check Balance
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                            <button
+                                                type="button"
                                                 onClick={handleOtherRequest}
-                                                className={`kiosk-pop group relative overflow-hidden rounded-[1.75rem] border-2 text-left transition-all duration-300 ${getCardClassName(item.type === 3, "accent")}`}
+                                                className={`kiosk-pop group col-span-2 relative overflow-hidden rounded-[1.75rem] border-2 text-left transition-all duration-300 ${getCardClassName(item.type === 3, "accent")}`}
                                                 style={{ animationDelay: `140ms` }}
                                             >
                                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_42%)]" />
                                                 <div className="relative flex h-full flex-col justify-between gap-6 px-6 py-6 md:px-7 md:py-7">
                                                     <div className="flex items-center gap-4">
                                                         <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.type === 3 ? "bg-white/20" : "bg-amber-100 text-amber-600"}`}>
-                                                            <FiFileText className="text-2xl md:text-3xl" />
+                                                            <MdOutlinePageview className="text-2xl md:text-3xl" />
                                                         </div>
                                                         <div>
                                                             <p className="inter-semibold text-2xl leading-tight md:text-[1.85rem]">
@@ -436,8 +585,37 @@ export default function DocumentBooking() {
                     onFieldChange={handleChange}
                     isSubmitDisabled={isSubmitDisabled}
                 />
+                <CheckBalanceDialog
+                    show={showCheckBalanceDialog}
+                    onClose={closeCheckBalanceDialog}
+                    onSubmit={handleCheckBalanceSubmit}
+                    offices={offices}
+                    selectedOfficeId={selectedOfficeId}
+                    pin={balancePin}
+                    officeError={checkBalanceErrors.office}
+                    pinError={checkBalanceErrors.pin}
+                    isLoading={checkOfficeBalance.isPending}
+                    isOfficesLoading={isFetchingOffices}
+                    onOfficeChange={handleOfficeChange}
+                    onPinChange={handleBalancePinChange}
+                />
                 <SuccessDialog show={showSuccessDialog} onClose={closeSuccessDialog} code={item.queue_number} />
                 <ErrorDialog show={showErrorDialog} onClose={() => setShowErrorDialog(false)} />
+                <CheckBalanceSuccess
+                    show={showCheckBalanceSuccess}
+                    onClose={closeCheckBalanceSuccess}
+                    officeName={balanceOffice?.name ?? selectedOfficeName}
+                    budgetMonitoring={budgetMonitoring}
+                />
+                <CheckBalanceIncorrect
+                    show={showCheckBalanceIncorrect}
+                    onClose={closeCheckBalanceIncorrect}
+                    onRetry={() => {
+                        setShowCheckBalanceIncorrect(false);
+                        setShowCheckBalanceDialog(true);
+                    }}
+                    message={checkBalanceMessage}
+                />
             </BookingLayout>
             <ConfirmationDialog
                 show={showConfirmation}

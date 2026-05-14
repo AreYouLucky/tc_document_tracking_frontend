@@ -40,7 +40,7 @@ function SuccessDialog({ show = false, onClose, code }: Props) {
 
     return (
         <Modal show={show} onClose={onClose}>
-            <div className="relative overflow-hidden rounded-2xl border border-white/40 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.24)] print:hidden">
+            <div className="w-170 relative overflow-hidden rounded-2xl border border-white/40 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.24)] print:hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.9),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.22),transparent_35%)]" />
                 <div className="relative px-6 pb-7 pt-5 md:px-7">
                     <div className="mx-auto mb-5 h-1.5 w-24 rounded-full bg-orange-200" />
