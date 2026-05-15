@@ -94,7 +94,7 @@ function CheckBalanceSuccess({
                                             <p className="text-sm uppercase tracking-[0.2em] text-slate-500">
                                                 Unobligated Balance
                                             </p>
-                                            <p className="mt-2 inter-bold text-2xl text-emerald-600">
+                                            <p className="mt-2 inter-bold text-2xl text-orange-600">
                                                 {pesoFormatter.format(Number(budget.unobligated_balance))}
                                             </p>
                                         </div>
