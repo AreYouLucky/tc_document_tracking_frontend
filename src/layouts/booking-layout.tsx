@@ -9,13 +9,13 @@ interface BookingLayoutProps {
 }
 
 const BookingLayout: React.FC<BookingLayoutProps> = ({ children, className }) => {
-  // const isIdle = useIdle(30000);
-  const isIdle = useIdle(5000000000000000000000000000); 
+  const isIdle = useIdle(30000);
+  // const isIdle = useIdle(5000000000000000000000000000); 
   const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     if (isIdle) {
-      //setShowOverlay(true);
+      setShowOverlay(true);
     }
   }, [isIdle]);
 
