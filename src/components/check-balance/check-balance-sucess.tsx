@@ -103,7 +103,7 @@ function CheckBalanceSuccess({
                                                 BUR(Obligation Based)*
                                             </p>
                                             <p className="mt-2 inter-bold text-2xl text-orange-600">
-                                                {pesoFormatter.format(Number(budget.obligation)/Number(budget.allotment)*100)}
+                                                {Number(budget.obligation)/Number(budget.allotment)*100}%
                                             </p>
                                         </div>
                                     </div>
