@@ -98,6 +98,14 @@ function CheckBalanceSuccess({
                                                 {pesoFormatter.format(Number(budget.unobligated_balance))}
                                             </p>
                                         </div>
+                                        <div className=" px-4 py-4 col-span-2">
+                                            <p className="text-sm uppercase tracking-[0.2em] text-slate-500">
+                                                BUR(Obligation Based)*
+                                            </p>
+                                            <p className="mt-2 inter-bold text-2xl text-orange-600">
+                                                {pesoFormatter.format(Number(budget.obligation)/Number(budget.allotment)*100)}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
