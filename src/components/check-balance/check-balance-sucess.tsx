@@ -103,7 +103,7 @@ function CheckBalanceSuccess({
                                                 BUR(Obligation Based)*
                                             </p>
                                             <p className="mt-2 inter-bold text-2xl text-orange-600">
-                                                {Number(budget.obligation)/Number(budget.allotment)*100}%
+                                                {`${Number(budget.allotment) ? ((Number(budget.obligation) / Number(budget.allotment)) * 100).toFixed(2) : '0.00'}%`}
                                             </p>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@ function CheckBalanceSuccess({
                                 onClick={onClose}
                                 className="mt-7 h-14 w-full rounded-[1.25rem] bg-linear-to-r from-orange-500 to-amber-500 text-base text-white shadow-[0_14px_30px_rgba(234,88,12,0.25)] hover:from-orange-600 hover:to-amber-600"
                             >
-                                Close Dialog 
+                                Close Dialog
                             </Button>
                         </div>
                     </div>
