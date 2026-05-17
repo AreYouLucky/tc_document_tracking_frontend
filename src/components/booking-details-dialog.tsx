@@ -68,6 +68,11 @@ function BookingDetailsDialog({
     "min-h-36 rounded-2xl border-2 border-orange-200 bg-white/90 pl-14 pr-4 pt-4 text-lg text-slate-900 shadow-[0_10px_25px_rgba(15,23,42,0.06)] transition focus:border-orange-500 focus:ring-4 focus:ring-orange-200/60 md:text-xl";
   const iconClassName =
     "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-orange-500";
+  const requiredLabel = (
+    <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-orange-600">
+      Required
+    </span>
+  );
 
   return (
     <Transition appear show={show} as={Fragment}>
@@ -131,6 +136,7 @@ function BookingDetailsDialog({
                     <div className="md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Full Name</span>
+                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -141,6 +147,8 @@ function BookingDetailsDialog({
                           className={inputClassName}
                           value={clientName}
                           onChange={onFieldChange}
+                          required
+                          aria-invalid={Boolean(clientNameError)}
                         />
                       </div>
                       <InputError message={clientNameError} className="mt-2 text-base" />
@@ -149,12 +157,13 @@ function BookingDetailsDialog({
                     <div className="">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Sex</span>
+                        {requiredLabel}
                       </Label>
                       <Select
                         value={sex}
                         onChange={onSexChange}
                         icon={<FiHeart className="text-2xl" />}
-                        placeholder=""
+                        placeholder="Select sex"
                         options={[
                           { label: "Male", value: "Male" },
                           { label: "Female", value: "Female" },
@@ -167,7 +176,7 @@ function BookingDetailsDialog({
                      <div className="">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Designation</span>
-                        <span className="text-orange-400 text-sm">(Optional)</span>
+                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -178,6 +187,8 @@ function BookingDetailsDialog({
                           className={inputClassName}
                           value={position}
                           onChange={onFieldChange}
+                          required
+                          aria-invalid={Boolean(positionError)}
                         />
                       </div>
                       <InputError message={positionError} className="mt-2 text-base" />
@@ -186,7 +197,7 @@ function BookingDetailsDialog({
                     <div className="col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Barangay | Requesting Office</span>
-                        <span className="text-orange-400 text-sm">(Optional)</span>
+                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -197,6 +208,8 @@ function BookingDetailsDialog({
                           className={inputClassName}
                           value={requestingOffice}
                           onChange={onFieldChange}
+                          required
+                          aria-invalid={Boolean(requestingOfficeError)}
                         />
                       </div>
                       <InputError message={requestingOfficeError} className="mt-2 text-base" />
@@ -207,7 +220,7 @@ function BookingDetailsDialog({
                     <div className=" md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Contact Number</span>
-                        <span className="text-orange-400 text-sm">(Optional)</span>
+                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -219,6 +232,8 @@ function BookingDetailsDialog({
                           value={contactNo}
                           onChange={onFieldChange}
                           placeholder="09XXXXXXXXX"
+                          required
+                          aria-invalid={Boolean(contactNoError)}
                         />
                       </div>
                       <InputError message={contactNoError} className="mt-2 text-base" />
@@ -227,7 +242,7 @@ function BookingDetailsDialog({
                     <div className="md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Purpose | Remarks</span>
-                        <span className="text-orange-400 text-sm">(Optional)</span>
+                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className="pointer-events-none absolute left-5 top-5 text-orange-500">
@@ -240,6 +255,8 @@ function BookingDetailsDialog({
                           onChange={onFieldChange}
                           rows={4}
                           placeholder="Add any notes or the purpose of your request"
+                          required
+                          aria-invalid={Boolean(purposeError)}
                         />
                       </div>
                       <InputError message={purposeError} className="mt-2 text-base" />

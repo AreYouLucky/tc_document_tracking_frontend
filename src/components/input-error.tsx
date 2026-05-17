@@ -15,7 +15,7 @@ export default function InputError({
   return (
     <p
       {...props}
-      className={`poppins-regular text-xs text-red-600 dark:text-red-400 ${className}`}
+      className={`poppins-regular text-base text-red-600 dark:text-red-400 ${className}`}
     >
       {message}
     </p>

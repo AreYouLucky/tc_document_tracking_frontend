@@ -152,6 +152,26 @@ export default function DocumentBooking() {
             nextErrors.client_name = "Please enter your full name.";
         }
 
+        if (!item.sex?.trim()) {
+            nextErrors.sex = "Please select your sex.";
+        }
+
+        if (!item.position?.trim()) {
+            nextErrors.position = "Please enter your designation.";
+        }
+
+        if (!item.requesting_office?.trim()) {
+            nextErrors.requesting_office = "Please enter your barangay or requesting office.";
+        }
+
+        if (!item.contact_no?.trim()) {
+            nextErrors.contact_no = "Please enter your contact number.";
+        }
+
+        if (!item.purpose?.trim()) {
+            nextErrors.purpose = "Please enter the purpose or remarks.";
+        }
+
         if (Object.keys(nextErrors).length > 0) {
             setErrors((prev) => ({
                 ...prev,
@@ -388,8 +408,6 @@ export default function DocumentBooking() {
     }
 
     const isSubmitDisabled =
-        !item.client_name?.trim() ||
-        !item.sex ||
         isFetching ||
         createBooking.isPending ||
         requestCoa.isPending ||

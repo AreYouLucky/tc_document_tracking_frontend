@@ -13,8 +13,8 @@ export default function Header() {
     return (
         <header className="flex justify-between items-center pt-4 px-16 mb-5">
             <div className="flex flex-col gap-2">
-                <span className="inter-bold text-4xl text-white">
-                    Document Queueing System
+                <span className="inter-bold text-3xl text-white">
+                    TANGUB CITY BUDGET QUEUE MANAGEMENT SYSTEM
                 </span>
 
                 <span className="inter-bold text-[13px] lg:text-xl rounded-lg w-fit text-white">
