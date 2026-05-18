@@ -68,11 +68,6 @@ function BookingDetailsDialog({
     "min-h-36 rounded-2xl border-2 border-orange-200 bg-white/90 pl-14 pr-4 pt-4 text-lg text-slate-900 shadow-[0_10px_25px_rgba(15,23,42,0.06)] transition focus:border-orange-500 focus:ring-4 focus:ring-orange-200/60 md:text-xl";
   const iconClassName =
     "pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-orange-500";
-  const requiredLabel = (
-    <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-orange-600">
-      Required
-    </span>
-  );
 
   return (
     <Transition appear show={show} as={Fragment}>
@@ -136,7 +131,6 @@ function BookingDetailsDialog({
                     <div className="md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Full Name</span>
-                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -157,7 +151,6 @@ function BookingDetailsDialog({
                     <div className="">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Sex</span>
-                        {requiredLabel}
                       </Label>
                       <Select
                         value={sex}
@@ -176,7 +169,6 @@ function BookingDetailsDialog({
                      <div className="">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Designation</span>
-                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -197,7 +189,6 @@ function BookingDetailsDialog({
                     <div className="col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Barangay | Requesting Office</span>
-                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -220,7 +211,6 @@ function BookingDetailsDialog({
                     <div className=" md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Contact Number</span>
-                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className={iconClassName}>
@@ -242,7 +232,6 @@ function BookingDetailsDialog({
                     <div className="md:col-span-2">
                       <Label className="inter-semibold mb-3 flex items-center gap-2 text-lg text-slate-800 md:text-lg">
                         <span className="text-orange-500 uppercase">Purpose | Remarks</span>
-                        {requiredLabel}
                       </Label>
                       <div className="relative">
                         <span className="pointer-events-none absolute left-5 top-5 text-orange-500">

@@ -81,6 +81,68 @@ export default function DocumentBooking() {
         return typeof value === "string" ? value : "";
     };
 
+    const formFieldNames = [
+        "client_name",
+        "sex",
+        "requesting_office",
+        "position",
+        "purpose",
+        "contact_no",
+        "service_id",
+        "queue_number",
+        "currentDate",
+        "type",
+    ] as const satisfies readonly (keyof FormValueTypes)[];
+
+    const isFormFieldName = (key: string): key is keyof FormValueTypes =>
+        (formFieldNames as readonly string[]).includes(key);
+
+    const errorFieldAliases: Partial<Record<string, keyof FormValueTypes>> = {
+        remarks: "purpose",
+    };
+
+    const getFormFieldName = (key: string): keyof FormValueTypes | null => {
+        if (isFormFieldName(key)) {
+            return key;
+        }
+
+        return errorFieldAliases[key] ?? null;
+    };
+
+    const normalizeSubmissionErrors = (value: unknown): Partial<Record<keyof FormValueTypes, string>> => {
+        if (!value || typeof value !== "object" || Array.isArray(value)) {
+            return {};
+        }
+
+        return Object.entries(value).reduce<Partial<Record<keyof FormValueTypes, string>>>((nextErrors, [key, message]) => {
+            const fieldName = getFormFieldName(key);
+
+            if (!fieldName) {
+                return nextErrors;
+            }
+
+            const errorMessage = getErrorMessage(message);
+            if (errorMessage) {
+                nextErrors[fieldName] = errorMessage;
+            }
+
+            return nextErrors;
+        }, {});
+    };
+
+    const handleSubmissionError = (errorsValue: unknown) => {
+        const submissionErrors = normalizeSubmissionErrors(errorsValue);
+
+        if (Object.keys(submissionErrors).length > 0) {
+            setErrors(submissionErrors);
+            setShowErrorDialog(false);
+            setShowDetailsDialog(true);
+            return;
+        }
+
+        setShowErrorDialog(true);
+    };
+
     const resetCheckBalanceForm = () => {
         setSelectedOfficeId("");
         setSelectedOfficeName("");
@@ -113,6 +175,7 @@ export default function DocumentBooking() {
     };
 
     const handleServiceSelect = (serviceId: number) => {
+        setErrors({});
         setItem((prev) => ({
             ...prev,
             service_id: serviceId,
@@ -125,10 +188,6 @@ export default function DocumentBooking() {
             purpose: "",
             contact_no: "",
 
-        }));
-        setErrors((prev) => ({
-            ...prev,
-            service_id: undefined,
         }));
 
         setShowDetailsDialog(true)
@@ -147,31 +206,6 @@ export default function DocumentBooking() {
 
     const handleDetailsContinue = () => {
         const nextErrors: Partial<Record<keyof FormValueTypes, string>> = {};
-
-        if (!item.client_name?.trim()) {
-            nextErrors.client_name = "Please enter your full name.";
-        }
-
-        if (!item.sex?.trim()) {
-            nextErrors.sex = "Please select your sex.";
-        }
-
-        if (!item.position?.trim()) {
-            nextErrors.position = "Please enter your designation.";
-        }
-
-        if (!item.requesting_office?.trim()) {
-            nextErrors.requesting_office = "Please enter your barangay or requesting office.";
-        }
-
-        if (!item.contact_no?.trim()) {
-            nextErrors.contact_no = "Please enter your contact number.";
-        }
-
-        if (!item.purpose?.trim()) {
-            nextErrors.purpose = "Please enter the purpose or remarks.";
-        }
-
         if (Object.keys(nextErrors).length > 0) {
             setErrors((prev) => ({
                 ...prev,
@@ -272,10 +306,7 @@ export default function DocumentBooking() {
                 }
             },
             onError: (error) => {
-                if (error.response?.data?.errors) {
-                    setErrors(error.response?.data.errors ?? {});
-                }
-                setShowErrorDialog(true);
+                handleSubmissionError(error.response?.data?.errors);
             },
         });
     };
@@ -319,14 +350,12 @@ export default function DocumentBooking() {
                 }
             },
             onError: (error) => {
-                if (error.response?.data?.errors) {
-                    setErrors(error.response?.data.errors ?? {});
-                }
-                setShowErrorDialog(true);
+                handleSubmissionError(error.response?.data?.errors);
             },
         });
     }
     const handleCoaRequest = () => {
+        setErrors({});
         setItem({
             client_name: "",
             sex: "",
@@ -342,6 +371,7 @@ export default function DocumentBooking() {
     }
 
     const handleOtherRequest = () => {
+        setErrors({});
         setItem({
             client_name: "",
             sex: "",
@@ -399,10 +429,7 @@ export default function DocumentBooking() {
                 }
             },
             onError: (error) => {
-                if (error.response?.data?.errors) {
-                    setErrors(error.response?.data.errors ?? {});
-                }
-                setShowErrorDialog(true);
+                handleSubmissionError(error.response?.data?.errors);
             },
         });
     }
