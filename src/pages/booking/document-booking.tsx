@@ -390,6 +390,7 @@ export default function DocumentBooking() {
 
     const closeSuccessDialog = () => {
         setShowSuccessDialog(false);
+        setPrintData(null);
         setItem({
             client_name: "",
             sex: "",
