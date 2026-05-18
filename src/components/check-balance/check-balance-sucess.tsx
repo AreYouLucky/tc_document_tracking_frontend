@@ -88,7 +88,7 @@ function CheckBalanceSuccess({
                                     <div
                                         role="tablist"
                                         aria-label="Allotment classes"
-                                        className="flex gap-2 overflow-x-auto border-b border-orange-100 pb-3 pt-1 px-1"
+                                        className="flex gap-2 overflow-x-auto border-b border-orange-100 pb-5 pt-1 px-1 justify-center"
                                     >
                                         {budgetMonitoring.map((budget) => {
                                             const isActive = activeBudget?.id === budget.id;
@@ -102,7 +102,7 @@ function CheckBalanceSuccess({
                                                     aria-controls={`budget-panel-${budget.id}`}
                                                     id={`budget-tab-${budget.id}`}
                                                     onClick={() => setActiveBudgetId(budget.id)}
-                                                    className={`shrink-0 rounded-full border px-5 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 ${isActive
+                                                    className={`shrink-0 rounded-full border px-5 py-2.5 text-base font-bold transition focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 ${isActive
                                                         ? "border-orange-500 bg-orange-500 text-white shadow-sm"
                                                         : "border-orange-200 bg-white text-slate-700 hover:border-orange-300 hover:bg-orange-50"
                                                         }`}
