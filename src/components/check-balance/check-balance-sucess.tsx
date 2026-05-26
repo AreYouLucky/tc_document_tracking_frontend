@@ -3,7 +3,6 @@ import { FiCheckCircle, FiX } from "react-icons/fi";
 import type { BudgetMonitoring } from "../../pages/booking/partials/booking-hooks";
 import { Button } from "../button";
 import Modal from "../modal";
-
 type Props = {
     show: boolean;
     onClose: () => void;
@@ -50,6 +49,16 @@ function CheckBalanceSuccess({
         });
     }, [budgetMonitoring, show]);
 
+    const formatDate = (date:string)=>{
+        const formattedDate = new Date(date).toLocaleString("en-PH", {
+            month: "long",
+            day: "2-digit",
+            year: "numeric",
+        });
+        return formattedDate
+
+    }
+
     return (
         <Modal show={show} onClose={onClose}>
             <div className="relative max-h-[85vh] overflow-hidden rounded-2xl border border-white/40 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.24)] print:hidden">
@@ -71,6 +80,10 @@ function CheckBalanceSuccess({
 
                         <div className="space-y-2 pt-3 pb-5">
                             <p className="inter-bold text-3xl text-slate-900">{officeName}</p>
+                            {budgetMonitoring.length > 0 &&
+                                <p className="inter-bold text-lg text-orange-400 mt-2">
+                                   as of {formatDate(budgetMonitoring[0].budget_date)}
+                                </p>}
                         </div>
                         {/* <div className="text-start w-full font-semibold uppercase">
                             Allotment Class

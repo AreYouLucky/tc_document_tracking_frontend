@@ -61,6 +61,7 @@ export type BudgetMonitoring = {
   allotment: string;
   obligation: string;
   unobligated_balance: string;
+  budget_date:string;
   created_at: string;
   updated_at: string;
   allotment_class: AllotmentClass;
