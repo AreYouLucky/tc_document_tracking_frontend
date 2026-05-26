@@ -169,7 +169,7 @@ function CheckBalanceSuccess({
                                                         Unobligated Balance
                                                     </p>
                                                     <p className="mt-2 inter-bold text-2xl text-orange-600">
-                                                        {pesoFormatter.format(Number(activeBudget.unobligated_balance))}
+                                                        {pesoFormatter.format(Number(activeBudget.allotment) - Number(activeBudget.obligation))}
                                                     </p>
                                                 </div>
                                                 <div className="px-4 py-4 md:col-span-2">
